@@ -1,4 +1,9 @@
+
+
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+// @ts-expect-error test
+import {MyProSidebarProvider} from './components/sidebarContext.jsx';
+import NewPage from "./components/NewPage.js";
  
 export default function App() {
   return (
@@ -14,6 +19,10 @@ export default function App() {
           }
 
   }} />
+<div style={{ display: 'flex', flexDirection: 'row' }}>
+    <MyProSidebarProvider/>
+  <NewPage/>
+  </div>
       </SignedIn>
     </header>
   )
