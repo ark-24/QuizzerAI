@@ -9,6 +9,10 @@ export default defineConfig({
       plugins: [tailwindcss()],
     },
   },
+  server: {
+    host: '127.0.0.1',  // Set the host to 127.0.0.1
+    port: 5173,         // Set the port to 5173
+  },
   plugins: [react()],
   resolve: {
     alias: {

@@ -27,7 +27,6 @@ const LandingPage = () => {
           <div className="flex items-center">
            
             <h1 className="mr-3 text-5xl font-semibold">Chat with any PDF</h1>
-            <UserButton afterSignOutUrl="/" />
           </div>
 
          
