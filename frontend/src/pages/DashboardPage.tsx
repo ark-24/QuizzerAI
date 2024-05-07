@@ -2,6 +2,8 @@ import { UserButton, useUser } from '@clerk/clerk-react'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import type { UserResource } from '@clerk/types';
+import SideBar from '@/components/SideBar';
+import CreateQuiz from './CreateQuiz';
 
 const DashboardPage = () => {
 
@@ -52,14 +54,27 @@ axios.get(url)
     console.error('There was a problem with the Axios request:', error); // Handle errors
   });
 }
-  },[currentUser])
+  },[currentUser, userEmail])
 
   return (
     <>
-    <div>DashboardPage</div>
-    <UserButton afterSignOutUrl="/" />
-    </>
+<div className="flex h-screen">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-600">
+        <SideBar />
+      </div>
 
+      {/* Main Content */}
+      <div className="flex-1">
+        <CreateQuiz />
+      </div>
+
+      {/* User Button */}
+      <div className="absolute top-0 right-0">
+        <UserButton afterSignOutUrl="/" />
+      </div>
+    </div>
+</>
   )
 }
 

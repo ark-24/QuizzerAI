@@ -4,6 +4,8 @@ import React from 'react'
 import { SignedIn, SignedOut, SignInButton, SignOutButton, UserButton, useUser } from '@clerk/clerk-react'
 import {Button} from "@/components/ui/button" 
 
+import { LogIn } from 'lucide-react'
+
 const LandingPage = () => {
   // const { loggedIn, email } = props
   // //const navigate = useNavigate()
@@ -38,8 +40,9 @@ const LandingPage = () => {
           <div className="mt-20">
           <SignedOut>
         <SignInButton afterSignInUrl='/dashboard'>
-        <Button className="bg-black  text-white font-bold py-2 px-4 rounded"> Log in </Button>
+        <Button className="bg-black text-white font-bold py-2 px-4 rounded flex items-center"> Log in <LogIn className='w-4 h-4 ml-2'/> </Button>
         </SignInButton>
+
       </SignedOut>
       </div>
         </div>
