@@ -32,6 +32,8 @@ urlpatterns = [
     path("register/", views.RegisterNewUser.as_view(),name="register"),
     path("login/", obtain_auth_token,name="create_token"),
     path("check-user/", views.check_users,name="check-user"),
+    path("read-file/", views.get_file_from_AWS,name="get-file-from-AWS"),
+
 
     path('', include(router.urls)),
 

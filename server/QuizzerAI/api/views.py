@@ -9,10 +9,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from rest_framework import viewsets
 from api import serializers
-
+import boto3
+from dotenv import load_dotenv
 from . import models
+import os
+import io
 
 
+load_dotenv()
 
 class RegisterNewUser(APIView):
     def post(self, request):
@@ -51,8 +55,8 @@ def handle_users(request):
     elif request.method == "POST":
         user = request.body
         user_dict = json.loads(user)
-        new_subject = models.Subject(**user_dict)
-        new_subject.save()
+        new_user = models.User(**user_dict)
+        new_user.save()
         return JsonResponse(user_dict, status=200)
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")
@@ -69,6 +73,32 @@ def check_users(request):
             return JsonResponse({"error": "Email not provided"}, status=400)
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")
+
+
+@csrf_exempt
+def get_file_from_AWS(request):
+    if request.method == "POST":
+        fileInfo = request.body
+        file_dict = json.loads(fileInfo)
+        file_key = file_dict["file_key"]
+
+        s3 = boto3.client('s3',
+                      aws_access_key_id= os.environ.get('AWS_ACCESS_KEY_ID'),
+                      aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+                      region_name='us-west-1')  # Replace with your region
+
+        response = s3.get_object(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key)
+        pdf_content = response['Body'].read()
+        '''
+        bytes_buffer = io.BytesIO()
+        s3.download_fileobj(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key, Fileobj=bytes_buffer)
+        byte_value = bytes_buffer.getvalue()
+        str_value = byte_value.decode()
+        print(str_value)
+        '''
+        return HttpResponse(pdf_content, content_type='application/pdf')
+
+
 
 class UserViewset(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
