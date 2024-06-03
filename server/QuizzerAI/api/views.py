@@ -1,4 +1,5 @@
 import json
+from PyPDF2 import PdfReader
 from django.shortcuts import render
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
@@ -14,6 +15,8 @@ from dotenv import load_dotenv
 from . import models
 import os
 import io
+from backend.pdf_extraction import extractText
+from backend.RAG import RAGSystem
 
 
 load_dotenv()
@@ -80,6 +83,7 @@ def get_file_from_AWS(request):
     if request.method == "POST":
         fileInfo = request.body
         file_dict = json.loads(fileInfo)
+        print(file_dict)
         file_key = file_dict["file_key"]
 
         s3 = boto3.client('s3',
@@ -89,6 +93,13 @@ def get_file_from_AWS(request):
 
         response = s3.get_object(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key)
         pdf_content = response['Body'].read()
+        # text = extractText(pdf_content)
+        file_obj = io.BytesIO(pdf_content)
+        rag = RAGSystem()
+
+        extractedText = extractText(file_obj)
+        rag.generate_rag(extractedText)
+        # print(f"text is {text}")
         '''
         bytes_buffer = io.BytesIO()
         s3.download_fileobj(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key, Fileobj=bytes_buffer)

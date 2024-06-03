@@ -1,7 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-from pdf_extraction import extractText
+from server.QuizzerAI.backend.pdf_extraction import extractText
 
 # Load environment variables from .env file
 load_dotenv()
