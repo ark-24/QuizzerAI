@@ -3,14 +3,16 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FileUpload from '@/components/FileUpload';
+import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Upload } from 'lucide-react';
-import axios from 'axios';
+import { toast } from "react-hot-toast";
 import { uploadToS3 } from '@/lib/s3';
+import { useMutation } from "@tanstack/react-query";
 // import axios from 'axios';
 
 const CreateQuiz = () => {
-
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<File|null>(null);
   const [checkbox, setCheckbox] = useState({
     flashCards: false,
@@ -27,9 +29,27 @@ const CreateQuiz = () => {
 
   const { flashCards, multiChoice, summary  } = checkbox;
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async ({
+      file_key,
+      file_name,
+    }: {
+      file_key: string;
+      file_name: string;
+    }) => {
+      const response = await axios.post("/api/create-conversation", {
+        file_key,
+        file_name,
+      });
+      return response.data;
+    },
+  });
+
+
   
   const handleFileUpload = async () => {
     if(uploadedFile) {
+      setIsUploading(true);
       const data = await uploadToS3(uploadedFile);
       axios.post("http://127.0.0.1:8000/api/read-file/", data)
         .then(response => {
@@ -38,6 +58,28 @@ const CreateQuiz = () => {
         .catch(error => {
           console.error('Error:', error);
         });
+        try {
+          // const data = await uploadToS3(file);
+          console.log("meow", data);
+          if (!data?.file_key || !data.file_name) {
+            toast.error("Something went wrong");
+            return;
+          }
+          mutate(data, {
+            onSuccess: ({ chat_id }) => {
+              toast.success("Chat created!");
+              router.push(`/chat/${chat_id}`);
+            },
+            onError: (err) => {
+              toast.error("Error creating chat");
+              console.error(err);
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsUploading(false);
+        }
     }
       
   };
