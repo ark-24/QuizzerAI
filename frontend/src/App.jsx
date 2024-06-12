@@ -8,6 +8,7 @@ import {
 import LandingPage from "./pages/LandingPage"
 import DashboardPage from "./pages/DashboardPage"
 import { SignedIn } from '@clerk/clerk-react';
+import Providers from "./components/Providers";
 
 // import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 
@@ -33,7 +34,9 @@ const router = createBrowserRouter(
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <Providers>
+        <RouterProvider router={router} />
+      </Providers>
     </>
   );
 }

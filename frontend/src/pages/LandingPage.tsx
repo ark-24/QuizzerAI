@@ -3,7 +3,6 @@ import React from 'react'
 // import { useNavigate } from 'react-router-dom'
 import { SignedIn, SignedOut, SignInButton, SignOutButton, UserButton, useUser } from '@clerk/clerk-react'
 import {Button} from "@/components/ui/button" 
-
 import { LogIn } from 'lucide-react'
 
 const LandingPage = () => {
@@ -15,6 +14,13 @@ const LandingPage = () => {
   // }
    
   //const { user } = useUser()
+  // const history = useHistory();
+
+
+  // const goToDashboard = () => {
+  //   history.push('/dashboard');
+  // };
+
 
     return (
 <>
@@ -44,6 +50,12 @@ const LandingPage = () => {
         </SignInButton>
 
       </SignedOut>
+      <SignedIn>
+        {/* <SignInButton afterSignInUrl='/dashboard'> */}
+        {/* <Button onClick={goToDashboard} className="bg-black text-white font-bold py-2 px-4 rounded flex items-center"> Go To Chats <LogIn className='w-4 h-4 ml-2'/> </Button> */}
+        {/* </SignInButton> */}
+
+      </SignedIn>
       </div>
         </div>
       </div>
