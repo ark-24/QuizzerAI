@@ -76,38 +76,46 @@ def check_users(request):
             return JsonResponse({"error": "Email not provided"}, status=400)
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")
-
-
+    
 @csrf_exempt
-def get_file_from_AWS(request):
+def create_quiz(request):
     if request.method == "POST":
-        fileInfo = request.body
-        file_dict = json.loads(fileInfo)
-        print(file_dict)
-        file_key = file_dict["file_key"]
+        reqBody = request.body
+        data_dict = json.loads(reqBody)
+        file_key = data_dict["file_key"]
+        if file_key:
+            response = process_file_from_AWS(file_key)
+            # return JsonResponse({"exists":user_exists})
+            return JsonResponse({"data": response})
+    else: 
+        return HttpResponseNotFound("Sorry this method is not supported")  
+    
 
-        s3 = boto3.client('s3',
-                      aws_access_key_id= os.environ.get('AWS_ACCESS_KEY_ID'),
-                      aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
-                      region_name='us-west-1')  # Replace with your region
 
-        response = s3.get_object(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key)
-        pdf_content = response['Body'].read()
-        # text = extractText(pdf_content)
-        file_obj = io.BytesIO(pdf_content)
-        rag = RAGSystem()
+def process_file_from_AWS(file_key):
 
-        extractedText = extractText(file_obj)
-        rag.generate_rag(extractedText)
-        # print(f"text is {text}")
-        '''
-        bytes_buffer = io.BytesIO()
-        s3.download_fileobj(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key, Fileobj=bytes_buffer)
-        byte_value = bytes_buffer.getvalue()
-        str_value = byte_value.decode()
-        print(str_value)
-        '''
-        return HttpResponse(pdf_content, content_type='application/pdf')
+    s3 = boto3.client('s3',
+                    aws_access_key_id= os.environ.get('AWS_ACCESS_KEY_ID'),
+                    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+                    region_name='us-west-1')  # Replace with your region
+
+    response = s3.get_object(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key)
+    pdf_content = response['Body'].read()
+    # text = extractText(pdf_content)
+    file_obj = io.BytesIO(pdf_content)
+    rag = RAGSystem()
+
+    extractedText = extractText(file_obj)
+    content = rag.generate_rag(extractedText)
+    # print(f"text is {text}")
+    '''
+    bytes_buffer = io.BytesIO()
+    s3.download_fileobj(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=file_key, Fileobj=bytes_buffer)
+    byte_value = bytes_buffer.getvalue()
+    str_value = byte_value.decode()
+    print(str_value)
+    '''
+    return content
 
 
 

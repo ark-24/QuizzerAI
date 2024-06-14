@@ -9,6 +9,7 @@ import { Upload } from 'lucide-react';
 import { toast } from "react-hot-toast";
 import { uploadToS3 } from '@/lib/s3';
 import { useMutation } from "@tanstack/react-query";
+// import { useNavigate  } from 'react-router-dom';
 // import axios from 'axios';
 
 const CreateQuiz = () => {
@@ -19,6 +20,7 @@ const CreateQuiz = () => {
     multiChoice: false,
     summary: false,
   });
+  // const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckbox({
@@ -29,6 +31,8 @@ const CreateQuiz = () => {
 
   const { flashCards, multiChoice, summary  } = checkbox;
 
+
+
   const { mutate, isPending } = useMutation({
     mutationFn: async ({
       file_key,
@@ -37,11 +41,17 @@ const CreateQuiz = () => {
       file_key: string;
       file_name: string;
     }) => {
-      const response = await axios.post("/api/create-conversation", {
+      const response = await axios.post("http://127.0.0.1:8000/api/create-quiz/", {
         file_key,
         file_name,
-      });
-      return response.data;
+        checkbox
+      }) .then(response => {
+            console.log('Response:', response.data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      return response;
     },
   });
 
@@ -51,24 +61,23 @@ const CreateQuiz = () => {
     if(uploadedFile) {
       setIsUploading(true);
       const data = await uploadToS3(uploadedFile);
-      axios.post("http://127.0.0.1:8000/api/read-file/", data)
-        .then(response => {
-          console.log('Response:', response.data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+      // axios.post("http://127.0.0.1:8000/api/read-file/", data)
+      //   .then(response => {
+      //     console.log('Response:', response.data);
+      //   })
+      //   .catch(error => {
+      //     console.error('Error:', error);
+      //   });
         try {
           // const data = await uploadToS3(file);
-          console.log("meow", data);
           if (!data?.file_key || !data.file_name) {
             toast.error("Something went wrong");
             return;
           }
           mutate(data, {
-            onSuccess: ({ chat_id }) => {
+            onSuccess: () => {
               toast.success("Chat created!");
-              router.push(`/chat/${chat_id}`);
+              // navigate(`/chat/${chat_id}`);
             },
             onError: (err) => {
               toast.error("Error creating chat");
@@ -101,7 +110,7 @@ const CreateQuiz = () => {
       <FormControlLabel required control={<Checkbox checked={multiChoice} onChange={handleChange} name="multiChoice"/>} label="Multiple Choice Questions" />
       <FormControlLabel  control={<Checkbox checked={summary} onChange={handleChange} name="summary"/>} label="Summary" />
       <div className='mt-8'>
-        <FileUpload onFileDrop={handleFileDrop}/>
+        <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
       </div>
       <div className='flex bg-black justify-center mt-10 text-white font-bold  rounded '>
         <Button onClick={handleFileUpload} className='items-center flex py-2 px-4'>

@@ -14,12 +14,7 @@ const LandingPage = () => {
   // }
    
   //const { user } = useUser()
-  // const history = useHistory();
-
-
-  // const goToDashboard = () => {
-  //   history.push('/dashboard');
-  // };
+ 
 
 
     return (

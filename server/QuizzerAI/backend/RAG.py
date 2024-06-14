@@ -37,7 +37,11 @@ class RAGSystem:
             while not self.pinecone_db.describe_index("quizzerai").status['ready']:
                 time.sleep(1)
             
-            query="what is the document about?"
+            query = (
+                "Given the following data extracted from notes. "
+                "Generate 10 true or false questions that can be used to study. "
+                "Return the data in JSON with the question and answers with the '(correct)' around the right answer."
+            )
 #             dataset = pinecone_datasets.load_dataset(content)
 #             dataset.documents.drop(dataset.documents.index[30_000:], inplace=True)
 # # we drop sparse_values as they are not needed for this example  
@@ -54,7 +58,7 @@ class RAGSystem:
                 chain_type="stuff",  
                 retriever=vectorstore.as_retriever()  
             )
-            print(qa.invoke(query)) 
+            return qa.invoke(query) 
 
     def split_document(self, doc):
         text_splitter =  RecursiveCharacterTextSplitter(
