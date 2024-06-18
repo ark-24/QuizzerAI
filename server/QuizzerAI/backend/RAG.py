@@ -1,4 +1,5 @@
 
+import json
 import os
 import time
 from dotenv import load_dotenv
@@ -12,6 +13,7 @@ from langchain.chains import RetrievalQA
 # from langchain_community.vectorstores import Pinecone
 from langchain.chains import RetrievalQAWithSourcesChain 
 import pinecone_datasets 
+from openai import OpenAI
 
 load_dotenv()
 pinecone_api_key = os.environ.get('PINECONE_DB_API_KEY')
@@ -29,7 +31,11 @@ class RAGSystem:
         openai_api_key=os.environ.get('OPENAI_API_KEY'),
         model_name='gpt-3.5-turbo',  
         temperature=0.0  
-        )  
+        )
+        self.client = OpenAI(
+                # This is the default and can be omitted
+                api_key=os.environ.get('OPENAI_API_KEY'),
+            )    
 
     def generate_rag(self,content):
         if self.pinecone_db:
@@ -42,11 +48,30 @@ class RAGSystem:
                 "Generate 10 true or false questions that can be used to study. "
                 "Return the data in JSON with the question and answers with the '(correct)' around the right answer."
             )
-#             dataset = pinecone_datasets.load_dataset(content)
-#             dataset.documents.drop(dataset.documents.index[30_000:], inplace=True)
-# # we drop sparse_values as they are not needed for this example  
-#             dataset.documents.drop(['metadata'], axis=1, inplace=True)  
-#             dataset.documents.rename(columns={'blob': 'metadata'}, inplace=True)  
+
+
+
+
+            #have chatgpt query from main.py generate questions -> iterate through questions accessing answers from vectorstore and return content
+
+
+            response = self.client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": f"Given the following data extracted from notes. Generate 10 multiple choice questions that can be used to study. Return the data in json with the question and answers. Here is the data: {content}"}] #with another property called correct that has the correct answer
+            )
+
+            print(response.choices[0].message.content.strip())
+
+            questions_json = response.choices[0].message.content.strip()
+
+            try:
+                questions = json.loads(questions_json)
+            except json.JSONDecodeError as e:
+                print(f"Failed to parse questions JSON: {e}")
+                return {"error": "Failed to parse questions JSON"}
+
+                
+
 
             vectorstore = PineconeVectorStore.from_texts(  
                 texts=self.split_document(content), embedding=self.embeddings,  index_name="quizzerai"
@@ -58,7 +83,11 @@ class RAGSystem:
                 chain_type="stuff",  
                 retriever=vectorstore.as_retriever()  
             )
-            return qa.invoke(query) 
+            for question in questions["questions"]:
+               query=f"Answer the question and list the correct answer for each question. Question is {question['question']}, answers are {question['answers']}"
+               print(qa.invoke(question["question"]))
+
+            return "hi"#qa.run(query) 
 
     def split_document(self, doc):
         text_splitter =  RecursiveCharacterTextSplitter(

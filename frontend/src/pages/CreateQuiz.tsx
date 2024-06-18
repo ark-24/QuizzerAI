@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useEffect, useState } from 'react'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -20,6 +21,17 @@ const CreateQuiz = () => {
     multiChoice: false,
     summary: false,
   });
+
+  const [quizType, setQuizType] = useState<string>("")
+
+  useEffect(()=> {
+
+    const quiz = Object.entries(checkbox).filter(([, value]) => value === true).map((item) => Object.keys(item))
+    console.log(quiz)
+
+    setQuizType("")
+
+  },[checkbox])
   // const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
