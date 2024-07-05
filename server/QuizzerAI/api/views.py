@@ -17,6 +17,8 @@ import os
 import io
 from backend.pdf_extraction import extractText
 from backend.RAG import RAGSystem
+from backend.createQuiz import generate_multiple_choice, generate_flashcards, generate_summary
+
 
 
 load_dotenv()
@@ -77,16 +79,59 @@ def check_users(request):
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")
     
+def get_user_id(email):
+        if email:
+            user = models.User.objects.get(email=email)
+            # return JsonResponse({"exists":user_exists})
+            print(user.id)
+        else:
+
+            return JsonResponse({"error": "Email not provided"}, status=400)   
+    
 @csrf_exempt
 def create_quiz(request):
     if request.method == "POST":
+        print("in endpoint")
         reqBody = request.body
         data_dict = json.loads(reqBody)
-        file_key = data_dict["file_key"]
+        file_key = data_dict["fileKey"]
+        file_name = data_dict["fileName"]
+        quiz_type = data_dict["quizType"]
+        user_email = data_dict["userEmail"]
+
+        title = "test"
+        user_id = get_user_id(user_email)
+
         if file_key:
             response = process_file_from_AWS(file_key)
+            content = None
+            print("in if")
             # return JsonResponse({"exists":user_exists})
-            return JsonResponse({"data": response})
+            # return JsonResponse({"data": response})
+            match quiz_type:
+                case "Multiple Choice":
+                    content = generate_multiple_choice(response)
+                    print(content)
+                
+                case "Flashcards": 
+                    content = generate_flashcards(response)
+                    print(content)
+
+
+                case "Summary":
+                    print("in case sum")
+                    content = generate_summary(response)
+                    print(content)
+
+            #if content is None:
+             #   return JsonResponse({"error": "Error generating study document..."},status=500)
+            quiz = request.body
+            quiz_dict = json.loads(quiz)
+            quiz_dict["content"] = content
+            new_quiz = models.Quiz(**quiz_dict)
+            new_quiz.save()
+            return JsonResponse(quiz_dict, status=200)
+
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")  
     
@@ -103,10 +148,9 @@ def process_file_from_AWS(file_key):
     pdf_content = response['Body'].read()
     # text = extractText(pdf_content)
     file_obj = io.BytesIO(pdf_content)
-    rag = RAGSystem()
 
     extractedText = extractText(file_obj)
-    content = rag.generate_rag(extractedText)
+    # content = rag.generate_rag(extractedText)
     # print(f"text is {text}")
     '''
     bytes_buffer = io.BytesIO()
@@ -115,7 +159,7 @@ def process_file_from_AWS(file_key):
     str_value = byte_value.decode()
     print(str_value)
     '''
-    return content
+    return extractedText
 
 
 
@@ -132,3 +176,10 @@ class UserViewset(viewsets.ModelViewSet):
             emails.append(pair["email"])
         print(emails)
         return Response(serializer.data)
+    
+
+class QuizViewset(viewsets.ModelViewSet):
+    serializer = serializers.QuizSerializer
+    queryset = models.Quiz.objects.all()
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

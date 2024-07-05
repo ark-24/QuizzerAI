@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,43 +11,27 @@ import Radio from '@mui/material/Radio';
 import { toast } from "react-hot-toast";
 import { uploadToS3 } from '@/lib/s3';
 import { useMutation } from "@tanstack/react-query";
-import { FormControl, FormLabel, RadioGroup, alpha  } from '@mui/material';
+import { FormControl, FormLabel, InputAdornment, RadioGroup, TextField, alpha  } from '@mui/material';
 import {  styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CreateIcon from '@mui/icons-material/Create';
 
-
+interface QuizProps {
+  userEmail: string;
+}
 // import { useNavigate  } from 'react-router-dom';
 // import axios from 'axios';
 
-const CreateQuiz = () => {
+const CreateQuiz = ({userEmail}: QuizProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<File|null>(null);
-  const [checkbox, setCheckbox] = useState<object>({
-    flashCards: false,
-    multiChoice: false,
-    summary: false,
-  });
+  const [quizType, setQuizType] = useState<string>('');
+  const [title, setTitle] = useState<string>();
 
-  const [quizType, setQuizType] = useState<string>("")
 
-  useEffect(()=> {
 
-    //const quiz = Object.entries(checkbox).filter(([, value]) => value === true).map((item) => Object.keys(item))
-    console.log(checkbox)
 
-    //Object.entries(checkbox).forEach((option) =>console.log(option) )
-    let option;
-    for (const [key, value] of Object.entries(checkbox)) {
-      if (value === true){
-        option = key;
-      }
-
-    }
-    console.log(option)
-    setQuizType("")
-
-  },[checkbox])
   // const navigate = useNavigate();
 
   // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,11 +40,16 @@ const CreateQuiz = () => {
   //     [event.target.name]: event.target.checked,
   //   });
   // };
-  const [value, setValue] = React.useState('female');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
+    setQuizType((event.target as HTMLInputElement).value);
+    
+
   };
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  }
 
   // const { flashCards, multiChoice, summary  } = checkbox;
 
@@ -68,16 +57,18 @@ const CreateQuiz = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({
-      file_key,
-      file_name,
+      fileKey,
+      fileName,
     }: {
-      file_key: string;
-      file_name: string;
+      fileKey: string;
+      fileName: string;
     }) => {
       const response = await axios.post("http://127.0.0.1:8000/api/create-quiz/", {
-        file_key,
-        file_name,
-        checkbox
+        fileKey,
+        fileName,
+        quizType,
+        userEmail,
+        title
       }) .then(response => {
             console.log('Response:', response.data);
           })
@@ -85,7 +76,7 @@ const CreateQuiz = () => {
             console.error('Error:', error);
           });
       return response;
-    },
+    }
   });
 
 
@@ -103,7 +94,7 @@ const CreateQuiz = () => {
       //   });
         try {
           // const data = await uploadToS3(file);
-          if (!data?.file_key || !data.file_name) {
+          if (!data?.fileKey || !data.fileName) {
             toast.error("Something went wrong");
             return;
           }
@@ -186,21 +177,36 @@ const CreateQuiz = () => {
         </Button>
       </div>
     </FormGroup> */}
-    <FormGroup className='w-1000'>
+    <FormGroup className=''>
     {/* <FormControl> */}
-  <FormLabel id="demo-controlled-radio-buttons-group">Gender</FormLabel>
+    <TextField
+        id="input-with-icon-textfield"
+        label="Title"
+        onChange={handleTitleChange}
+        inputRef={inputTextRef}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <CreateIcon />
+            </InputAdornment>
+          ),
+        }}
+        variant="standard"
+      />
+
+  <FormLabel id="demo-controlled-radio-buttons-group" className='text-center mt-10'>Quiz Type</FormLabel>
   <RadioGroup
     aria-labelledby="demo-controlled-radio-buttons-group"
     name="controlled-radio-buttons-group"
-    value={value}
+    value={quizType}
     onChange={handleChange}
   >
     <FormControlLabel value="Multiple Choice" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Multiple Choice" />
-    <FormControlLabel value="Flash Cards" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />}/>} label="Flashcards" />
-    <FormControlLabel value="Summary" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="summary" />
+    <FormControlLabel value="Flashcards" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />}/>} label="Flashcards" />
+    <FormControlLabel value="Summary" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Summary" />
 
   </RadioGroup>
-  <div className='mt-8'>
+  <div className='mt-8 w-full'>
         <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
       </div>
       <div className='flex bg-black justify-center mt-10 text-white font-bold  rounded '>

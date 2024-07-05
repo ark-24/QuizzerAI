@@ -37,7 +37,8 @@ class RAGSystem:
                 api_key=os.environ.get('OPENAI_API_KEY'),
             )    
 
-    def generate_rag(self,content):
+    def generate_rag(self,content,type):
+        print("in gen rag")
         if self.pinecone_db:
             self.pinecone_index = self.pinecone_db.Index("quizzerai") 
             while not self.pinecone_db.describe_index("quizzerai").status['ready']:
@@ -48,19 +49,23 @@ class RAGSystem:
                 "Generate 10 true or false questions that can be used to study. "
                 "Return the data in JSON with the question and answers with the '(correct)' around the right answer."
             )
-
-
-
+            prompt= ""
+            match type:
+                case "MC":
+                    prompt = os.environ.get('MC_PROMPT')
+                case "FC":
+                    prompt = os.environ.get('FC_PROMPT')
+                case "SUM":
+                    print("in sum")
+                    prompt = os.environ.get('SUM_PROMPT')
 
             #have chatgpt query from main.py generate questions -> iterate through questions accessing answers from vectorstore and return content
 
-
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": f"Given the following data extracted from notes. Generate 10 multiple choice questions that can be used to study. Return the data in json with the question and answers. Here is the data: {content}"}] #with another property called correct that has the correct answer
+                messages=[{"role": "user", "content":  prompt + f"Here is the data: {content}"}] #with another property called correct that has the correct answer
             )
 
-            print(response.choices[0].message.content.strip())
 
             questions_json = response.choices[0].message.content.strip()
 
@@ -76,18 +81,17 @@ class RAGSystem:
             vectorstore = PineconeVectorStore.from_texts(  
                 texts=self.split_document(content), embedding=self.embeddings,  index_name="quizzerai"
             )  
-            print(self.pinecone_index.describe_index_stats())
 
             qa = RetrievalQA.from_chain_type(  
                 llm=self.llm,  
                 chain_type="stuff",  
                 retriever=vectorstore.as_retriever()  
             )
-            for question in questions["questions"]:
+            '''for question in questions["questions"]:
                query=f"Answer the question and list the correct answer for each question. Question is {question['question']}, answers are {question['answers']}"
-               print(qa.invoke(question["question"]))
+               print(qa.invoke(question["question"]))'''
 
-            return "hi"#qa.run(query) 
+            return questions #qa.run(query) 
 
     def split_document(self, doc):
         text_splitter =  RecursiveCharacterTextSplitter(

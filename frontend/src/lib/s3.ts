@@ -4,7 +4,7 @@ import { PutObjectCommandOutput, S3 } from "@aws-sdk/client-s3";
 
 export async function uploadToS3(
     file: File
-  ): Promise<{ file_key: string; file_name: string }> {
+  ): Promise<{ fileKey: string; fileName: string; }> {
     return new Promise((resolve, reject) => {
       try {
         const s3 = new S3({
@@ -27,8 +27,8 @@ export async function uploadToS3(
           params,
           (err: unknown, data: PutObjectCommandOutput | undefined) => {
             return resolve({
-              file_key,
-              file_name: file.name,
+              fileKey: file_key,
+              fileName: file.name,
             });
           }
         );

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
@@ -38,6 +39,22 @@ class CustomUserManager(BaseUserManager):
         user.save()
         return user
         
+class CustomQuizManager(BaseUserManager):
+    """
+    Custom user model manager where email is the unique identifiers
+    for authentication instead of usernames.
+    """
+    def create_user(self, email, password=None, **extra_fields):
+        """
+        Create and save a user with the given email and password.
+        """
+        if not email:
+            raise ValueError("The Email must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_unusable_password()
+        user.save()
+        return user
 
 class User(AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -56,12 +73,13 @@ class User(AbstractBaseUser):
     
 class Quiz(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    createdAt = models.DateTimeField(default=timezone.now)  # Temporary default
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    file = models.FileField(upload_to='path/to/uploads/')
-    is_flash_cards = models.BooleanField(default=False)
-    is_multiple_choice = models.BooleanField(default=False)
-    is_summary = models.BooleanField(default=False)
+    fileKey = models.CharField(max_length=100,null=True)  # Consider using models.FileField if you handle file uploads
+    fileName = models.CharField(max_length=1000,null=True)
+    quizType = models.CharField(max_length=20,null=True)
+    content = models.JSONField(blank=False, null=False, default=dict)  # Use dict as the default callable
 
     def __str__(self):
         return self.title

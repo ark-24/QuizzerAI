@@ -67,7 +67,7 @@ axios.get(url)
 
       {/* Main Content */}
       <div className="flex-1">
-        <CreateQuiz />
+        <CreateQuiz userEmail={userEmail} />
       </div>
 
       {/* User Button */}
