@@ -29,8 +29,8 @@ class RAGSystem:
         )
         self.llm = ChatOpenAI(  
         openai_api_key=os.environ.get('OPENAI_API_KEY'),
-        model_name='gpt-3.5-turbo',  
-        temperature=0.0  
+        model_name='gpt-4o',  
+        temperature=0.7  
         )
         self.client = OpenAI(
                 # This is the default and can be omitted
@@ -38,17 +38,12 @@ class RAGSystem:
             )    
 
     def generate_rag(self,content,type):
-        print("in gen rag")
         if self.pinecone_db:
             self.pinecone_index = self.pinecone_db.Index("quizzerai") 
             while not self.pinecone_db.describe_index("quizzerai").status['ready']:
                 time.sleep(1)
             
-            query = (
-                "Given the following data extracted from notes. "
-                "Generate 10 true or false questions that can be used to study. "
-                "Return the data in JSON with the question and answers with the '(correct)' around the right answer."
-            )
+          
             prompt= ""
             match type:
                 case "MC":
@@ -62,12 +57,15 @@ class RAGSystem:
             #have chatgpt query from main.py generate questions -> iterate through questions accessing answers from vectorstore and return content
 
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content":  prompt + f"Here is the data: {content}"}] #with another property called correct that has the correct answer
+                model="gpt-4o",
+                messages=[{"role": "user", "content":  prompt + f" Base your response on the following data: {content}"}] ,
+                temperature=0.7
             )
 
 
             questions_json = response.choices[0].message.content.strip()
+            print("questions are: ")
+            print(questions_json)
 
             try:
                 questions = json.loads(questions_json)

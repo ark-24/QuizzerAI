@@ -20,8 +20,6 @@ import CreateIcon from '@mui/icons-material/Create';
 interface QuizProps {
   userEmail: string;
 }
-// import { useNavigate  } from 'react-router-dom';
-// import axios from 'axios';
 
 const CreateQuiz = ({userEmail}: QuizProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -29,31 +27,14 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
   const [quizType, setQuizType] = useState<string>('');
   const [title, setTitle] = useState<string>();
 
-
-
-
-  // const navigate = useNavigate();
-
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setCheckbox({
-  //     ...checkbox,
-  //     [event.target.name]: event.target.checked,
-  //   });
-  // };
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuizType((event.target as HTMLInputElement).value);
     
-
   };
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   }
-
-  // const { flashCards, multiChoice, summary  } = checkbox;
-
-
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({
@@ -68,7 +49,7 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
         fileName,
         quizType,
         userEmail,
-        title
+        title : title ? title : fileName
       }) .then(response => {
             console.log('Response:', response.data);
           })
@@ -85,13 +66,6 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
     if(uploadedFile) {
       setIsUploading(true);
       const data = await uploadToS3(uploadedFile);
-      // axios.post("http://127.0.0.1:8000/api/read-file/", data)
-      //   .then(response => {
-      //     console.log('Response:', response.data);
-      //   })
-      //   .catch(error => {
-      //     console.error('Error:', error);
-      //   });
         try {
           // const data = await uploadToS3(file);
           if (!data?.fileKey || !data.fileName) {
@@ -99,8 +73,9 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
             return;
           }
           mutate(data, {
-            onSuccess: () => {
+            onSuccess: (data) => {
               toast.success("Chat created!");
+              console.log(data);
               // navigate(`/chat/${chat_id}`);
             },
             onError: (err) => {
@@ -157,33 +132,14 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
     
   }));
 
-  // const handleSubmit = () => {
-  //   console.log(`Values are ${flashCards}, ${multiChoice}, ${summary}`)
-
-  // }
   return (
     <div className='h-full bg-green-200'>
         <div className='flex justify-center items-center h-screen'>
-        {/* <FormGroup>
-      <FormControlLabel control={<Checkbox checked={flashCards} onChange={handleChange} name="flashCards"/>} label="Flashcards" />
-      <FormControlLabel required control={<Checkbox checked={multiChoice} onChange={handleChange} name="multiChoice"/>} label="Multiple Choice Questions" />
-      <FormControlLabel  control={<Checkbox checked={summary} onChange={handleChange} name="summary"/>} label="Summary" />
-      <div className='mt-8'>
-        <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
-      </div>
-      <div className='flex bg-black justify-center mt-10 text-white font-bold  rounded '>
-        <Button onClick={handleFileUpload} className='items-center flex py-2 px-4'>
-          Upload <Upload className='w-4 h-4 ml-2'/>
-        </Button>
-      </div>
-    </FormGroup> */}
     <FormGroup className=''>
-    {/* <FormControl> */}
     <TextField
         id="input-with-icon-textfield"
         label="Title"
         onChange={handleTitleChange}
-        inputRef={inputTextRef}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -214,7 +170,6 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
           Upload <Upload className='w-4 h-4 ml-2'/>
         </Button>
       </div>
-{/* </FormControl> */}
 </FormGroup>
 
 

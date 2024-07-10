@@ -82,8 +82,8 @@ def check_users(request):
 def get_user_id(email):
         if email:
             user = models.User.objects.get(email=email)
+            return user.id
             # return JsonResponse({"exists":user_exists})
-            print(user.id)
         else:
 
             return JsonResponse({"error": "Email not provided"}, status=400)   
@@ -91,23 +91,19 @@ def get_user_id(email):
 @csrf_exempt
 def create_quiz(request):
     if request.method == "POST":
-        print("in endpoint")
         reqBody = request.body
         data_dict = json.loads(reqBody)
         file_key = data_dict["fileKey"]
         file_name = data_dict["fileName"]
         quiz_type = data_dict["quizType"]
         user_email = data_dict["userEmail"]
+        title = data_dict["title"]
 
-        title = "test"
         user_id = get_user_id(user_email)
 
         if file_key:
             response = process_file_from_AWS(file_key)
             content = None
-            print("in if")
-            # return JsonResponse({"exists":user_exists})
-            # return JsonResponse({"data": response})
             match quiz_type:
                 case "Multiple Choice":
                     content = generate_multiple_choice(response)
@@ -127,10 +123,9 @@ def create_quiz(request):
              #   return JsonResponse({"error": "Error generating study document..."},status=500)
             quiz = request.body
             quiz_dict = json.loads(quiz)
-            quiz_dict["content"] = content
-            new_quiz = models.Quiz(**quiz_dict)
+            new_quiz = models.Quiz(fileKey=file_key, fileName=file_name, user_id=user_id, quizType=quiz_type, content=content, title=title)
             new_quiz.save()
-            return JsonResponse(quiz_dict, status=200)
+            return JsonResponse({"quizId": new_quiz.id}, status=200)
 
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")  
