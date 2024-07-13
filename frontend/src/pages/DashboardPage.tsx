@@ -59,22 +59,22 @@ axios.get(url)
 
   return (
     <>
-<div className="flex h-screen">
+{/* <div className="flex h-screen"> */}
       {/* Sidebar */}
-      <div className="w-64 bg-gray-600">
+      {/* <div className="w-64 bg-gray-600">
         <SideBar />
-      </div>
+      </div> */}
 
       {/* Main Content */}
-      <div className="flex-1">
+      {/* <div className="flex-1"> */}
         <CreateQuiz userEmail={userEmail} />
-      </div>
+      {/* </div> */}
 
       {/* User Button */}
-      <div className="absolute top-0 right-0">
+      {/* <div className="absolute top-0 right-0">
         <UserButton afterSignOutUrl="/" />
-      </div>
-    </div>
+      </div> */}
+    {/* </div> */}
 </>
   )
 }

@@ -17,11 +17,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CreateIcon from '@mui/icons-material/Create';
 
-interface QuizProps {
+interface CreateQuizProps {
   userEmail: string;
 }
 
-const CreateQuiz = ({userEmail}: QuizProps) => {
+const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<File|null>(null);
   const [quizType, setQuizType] = useState<string>('');
@@ -51,16 +51,29 @@ const CreateQuiz = ({userEmail}: QuizProps) => {
         userEmail,
         title : title ? title : fileName
       }) .then(response => {
+            toast.success("Chat created!");
             console.log('Response:', response.data);
+            navigateToChat(response.data.quizId)
           })
           .catch(error => {
             console.error('Error:', error);
           });
+          
       return response;
+    },
+    onSuccess: (data) => {
+        console.log("done ", data)
     }
   });
 
+ const navigateToChat = (chatId: string) => {
 
+    switch(quizType) {
+      
+    }
+  
+
+ }
   
   const handleFileUpload = async () => {
     if(uploadedFile) {
