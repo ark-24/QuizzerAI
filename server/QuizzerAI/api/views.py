@@ -1,6 +1,7 @@
 import json
 from PyPDF2 import PdfReader
 from django.shortcuts import render
+from numpy import generic
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -18,7 +19,7 @@ import io
 from backend.pdf_extraction import extractText
 from backend.RAG import RAGSystem
 from backend.createQuiz import generate_multiple_choice, generate_flashcards, generate_summary
-
+from rest_framework import generics 
 
 
 load_dotenv()
@@ -41,6 +42,27 @@ class RegisterNewUser(APIView):
             return Response({"message": "User created"})
         except:
             return Response({"message": "User creation failed or user already exists"})
+
+class QuizDetailView(generics.RetrieveAPIView):
+    queryset = models.Quiz.objects.all()
+    serializer_class = serializers.QuizSerializer
+    lookup_field = 'id'
+
+    def get_object(self):
+        quiz_id = self.kwargs.get('quiz_id')
+        return generics.get_object_or_404(models.Quiz, id=quiz_id)
+    
+class QuizListView(generics.ListAPIView):
+    queryset = models.Quiz.objects.all()
+    serializer_class = serializers.QuizSerializer
+
+    def get_queryset(self):
+        email = self.kwargs.get('email')
+        userId = get_user_id(email)
+        print("userId: " + str(userId))
+        return models.Quiz.objects.filter(user=userId)
+    
+    
         
 class greeting(APIView):
     permission_classes = ( IsAuthenticated, ) 
@@ -87,6 +109,18 @@ def get_user_id(email):
         else:
 
             return JsonResponse({"error": "Email not provided"}, status=400)   
+
+@csrf_exempt
+def get_quiz(request):
+    if request.method == "GET":
+        id = request.GET.get("id")
+        if id:
+            quiz = models.Quiz.objects.get(id=id)
+            return JsonResponse({ quiz }, status=200)
+        else:
+            return JsonResponse({"error": "Email not provided"}, status=400)  
+    else: 
+        return HttpResponseNotFound("Sorry this method is not supported") 
     
 @csrf_exempt
 def create_quiz(request):

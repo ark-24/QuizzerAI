@@ -32,6 +32,9 @@ urlpatterns = [
     path("register/", views.RegisterNewUser.as_view(),name="register"),
     path("login/", obtain_auth_token,name="create_token"),
     path("check-user/", views.check_users,name="check-user"),
+    path("get-quiz/", views.get_quiz,name="get-quiz"),
+    path('quiz/<uuid:quiz_id>/', views.QuizDetailView.as_view(), name='quiz-detail'),   
+    path('quizzes/<str:email>/', views.QuizListView.as_view(), name='quizzes'),   
     # path("read-file/", views.get_file_from_AWS,name="get-file-from-AWS"),
     path("create-quiz/", views.create_quiz,name="create-quiz"),
 

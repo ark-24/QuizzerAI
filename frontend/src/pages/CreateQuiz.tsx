@@ -16,6 +16,7 @@ import {  styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CreateIcon from '@mui/icons-material/Create';
+import { useNavigate } from 'react-router-dom';
 
 interface CreateQuizProps {
   userEmail: string;
@@ -26,6 +27,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   const [uploadedFile, setUploadedFile] = useState<File|null>(null);
   const [quizType, setQuizType] = useState<string>('');
   const [title, setTitle] = useState<string>();
+  const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuizType((event.target as HTMLInputElement).value);
@@ -53,7 +55,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
       }) .then(response => {
             toast.success("Chat created!");
             console.log('Response:', response.data);
-            navigateToChat(response.data.quizId)
+            navigate(`/quiz/${response.data.quizId}?type=${quizType}`)
           })
           .catch(error => {
             console.error('Error:', error);

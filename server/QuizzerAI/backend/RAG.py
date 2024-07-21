@@ -64,6 +64,9 @@ class RAGSystem:
 
 
             questions_json = response.choices[0].message.content.strip()
+            questions_json = questions_json.strip('"```json').strip('```"') 
+            # questions_json = questions_json.strip('"```json').strip('```"') 
+
             print("questions are: ")
             print(questions_json)
 

@@ -1,14 +1,49 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MessageCircle, PlusCircle } from "lucide-react";
 import { Button } from './ui/button';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
+import {getCurrentUserEmail} from '../lib/currentUser';
+import axios from 'axios';
 
-const SideBar = () => {
+const SideBar = async () => {
+  const navigate = useNavigate();
+  const [quizzes, setQuizzes] = useState<JSON|null>(null);
+  
 
+  const handleNewQuiz = () => {
+    navigate(`/dashboard`)
+  }
+
+
+  // useEffect(()=> {
+  //   const getQuizzes = async () => {
+  //     try {
+        const { user } = useUser();
+        const userEmail = user?.primaryEmailAddress?.emailAddress;
+        if (userEmail) {
+        const response = await axios.get(`http://127.0.0.1:8000/api/quizzes/${userEmail}`);
+        setQuizzes(response.data);
+        console.log(response.data);
+        }
+        else {
+          console.log("Error: User Not Found");
+          
+        }
+
+  //     } catch (error) {
+  //       console.error("Error fetching quiz:", error);
+  //     }
+  //   }
+  //   getQuizzes();
+  // }, []);
+
+  
     return (
   <div className="w-64 bg-slate-700 h-full overflow-y-auto">
     {/* Sidebar content goes here */}
-    <Button className="w-full border-dashed flex justify-center items-center border-white border h-10">
+    <Button className="w-full border-dashed flex justify-center items-center border-white border h-10" onClick={handleNewQuiz}>
       <PlusCircle className="w-4 h-4 mr-4" />
       New Chat
     </Button>
