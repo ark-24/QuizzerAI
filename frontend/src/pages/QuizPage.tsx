@@ -45,7 +45,7 @@ const QuizPage = ({}: QuizProps) => {
   const [fileKey, setFileKey] = useState<string>();
   const quizType = params.get('type');
   const [currIndex, setCurrIndex] = useState<number>(1);
-  const currentQ = useRef<any>(quizData?.content?.questions[1]);
+  const currentQ = useRef<any>();
   const score = useRef<number>(0);
 
   useEffect(()=> {
@@ -93,7 +93,15 @@ const QuizPage = ({}: QuizProps) => {
       <div className='w-5/12'>
         <PDFViewer pdf_url={fileKey ? getS3Url(fileKey) : ""}/>
       </div>
-      <div className='w-7/12 bg-green-400'>
+      <div className='w-7/12 flex flex-col  justify-center items-center h-screen'  style={{
+            backgroundImage: "url(/pent.png)",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}>
+            <div className="flex flex-col  justify-center items-center h-screen" >
+            <div className="mt-20" >
+                {quizData.title}
+            </div>
         { quizType === "Multiple Choice" && (
           <>
           <div className="flex flex-col justify-center items-center h-screen relative">
@@ -114,7 +122,6 @@ const QuizPage = ({}: QuizProps) => {
                 </CSSTransition>
               </TransitionGroup>
               </div>
-          <div>{score.current}</div>
           </>
         )}
         { quizType === "Flashcards" && (
@@ -125,6 +132,8 @@ const QuizPage = ({}: QuizProps) => {
         )}
       </div>
     </div>
+    </div>
+
   );
 };
 

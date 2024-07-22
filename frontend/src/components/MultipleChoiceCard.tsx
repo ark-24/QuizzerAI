@@ -29,7 +29,8 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+    
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto " >
       <div className="mb-4">
         <h2 className="text-xl font-semibold justify-center align-middle">{question}</h2>
       </div>

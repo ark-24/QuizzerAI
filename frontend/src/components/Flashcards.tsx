@@ -12,14 +12,8 @@ const Flashcards = ({cards, title}: FlashcardsProps) => {
     return (
 
 
-        <div className="flex flex-col  justify-center items-center h-screen"
-        style={{
-            backgroundImage: "url(/pent.png)",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}>
-            <div className="mb-20"
-            >
+        <div className="flex flex-col  justify-center items-center h-screen" >
+            <div className="mb-20" >
                 {title}
             </div>
       <FlashcardArray cards={cards} 

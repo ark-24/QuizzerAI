@@ -24,7 +24,7 @@ const LandingPage = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center text-center">
         <div className='mt-10 mb-10'>
-              <img src="/QAI--.png"></img>
+              <img src="/_QAI.png"></img>
 
             </div>
           <div className="flex items-center">

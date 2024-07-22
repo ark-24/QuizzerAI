@@ -2,25 +2,36 @@
 import React, { useEffect, useState } from 'react'
 import { MessageCircle, PlusCircle } from "lucide-react";
 import { Button } from './ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import {getCurrentUserEmail} from '../lib/currentUser';
 import axios from 'axios';
+import { cn } from '@/lib/utils';
+import { Link } from "react-router-dom";
 
-const SideBar = async () => {
+const SideBar =  () => {
   const navigate = useNavigate();
-  const [quizzes, setQuizzes] = useState<JSON|null>(null);
-  
-
+  const [quizzes, setQuizzes] = useState<Array<any>>([]);
+  const { user } = useUser();
+  const location = useLocation();
+  let quizId=""
+  useEffect(()=> {
+  if (location.pathname.includes("quiz")) {
+    if(location.pathname.split("/quiz/"))
+    {
+      quizId = location.pathname.split("/quiz/")[1]
+    }
+    console.log(quizId)
+  }
+},[])
   const handleNewQuiz = () => {
     navigate(`/dashboard`)
   }
 
 
-  // useEffect(()=> {
-  //   const getQuizzes = async () => {
-  //     try {
-        const { user } = useUser();
+  useEffect(()=> {
+    const getQuizzes = async () => {
+      try {
         const userEmail = user?.primaryEmailAddress?.emailAddress;
         if (userEmail) {
         const response = await axios.get(`http://127.0.0.1:8000/api/quizzes/${userEmail}`);
@@ -32,12 +43,12 @@ const SideBar = async () => {
           
         }
 
-  //     } catch (error) {
-  //       console.error("Error fetching quiz:", error);
-  //     }
-  //   }
-  //   getQuizzes();
-  // }, []);
+      } catch (error) {
+        console.error("Error fetching quiz:", error);
+      }
+    }
+    getQuizzes();
+  }, []);
 
   
     return (
@@ -66,6 +77,17 @@ const SideBar = async () => {
           </div>
         </Link>
       ))} */}
+        {quizzes && quizzes.map((quiz: any) => (
+          <Link to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
+          <div className={cn("rounded-lg p-3 text-slate-300  border-red-500  flex items-center", {
+            "bg-blue-600 text-white": quiz.id === quizId,
+            "hover:text-white": quiz.id !== quizId,
+          })}>
+            {quiz.title}
+          </div>
+          </Link>
+        ))}
+
     </div>
   </div>
     );
