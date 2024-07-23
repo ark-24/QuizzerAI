@@ -77,9 +77,9 @@ const SideBar =  () => {
           </div>
         </Link>
       ))} */}
-        {quizzes && quizzes.map((quiz: any) => (
-          <Link to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
-          <div className={cn("rounded-lg p-3 text-slate-300  border-red-500  flex items-center", {
+        {quizzes && quizzes.map((quiz: any, index:number) => (
+          <Link key={index} to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
+          <div key={index} className={cn("rounded-lg p-3 text-slate-300  border-red-500  flex items-center", {
             "bg-blue-600 text-white": quiz.id === quizId,
             "hover:text-white": quiz.id !== quizId,
           })}>

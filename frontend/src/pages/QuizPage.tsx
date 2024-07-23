@@ -9,6 +9,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import type { CarouselRef } from 'react-bootstrap/Carousel';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import '../styles/QuizPage.css';
+import Summary from '@/components/Summary';
 
 interface QuizProps {
     pdfUrl: string;
@@ -60,7 +61,10 @@ const QuizPage = ({}: QuizProps) => {
         console.error("Error fetching quiz:", error);
       }
     }
+    if (quizType === "Multiple Choice") {
+
     getQuiz();
+  }
   }, [id]);
 
   if (!quizData) {
@@ -99,9 +103,9 @@ const QuizPage = ({}: QuizProps) => {
             backgroundPosition: 'center',
           }}>
             <div className="flex flex-col  justify-center items-center h-screen" >
-            <div className="mt-20" >
+            <h2 className="mt-20 font-semibold" >
                 {quizData.title}
-            </div>
+            </h2>
         { quizType === "Multiple Choice" && (
           <>
           <div className="flex flex-col justify-center items-center h-screen relative">
@@ -128,7 +132,7 @@ const QuizPage = ({}: QuizProps) => {
           <Flashcards cards={quizData.content.cards} title={quizData.title} />
         )}
         { quizType === "Summary" && (
-          <div>Summary</div>
+          <Summary content={quizData.content}/>
         )}
       </div>
     </div>

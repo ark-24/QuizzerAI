@@ -63,15 +63,14 @@ class RAGSystem:
             )
 
 
-            questions_json = response.choices[0].message.content.strip()
-            questions_json = questions_json.strip('"```json').strip('```"') 
+            content_json = response.choices[0].message.content.strip()
+            content_json = content_json.strip('"```json').strip('```"') 
             # questions_json = questions_json.strip('"```json').strip('```"') 
 
             print("questions are: ")
-            print(questions_json)
-
+            print(content_json)
             try:
-                questions = json.loads(questions_json)
+                content = json.loads(content_json)
             except json.JSONDecodeError as e:
                 print(f"Failed to parse questions JSON: {e}")
                 return {"error": "Failed to parse questions JSON"}
@@ -92,7 +91,7 @@ class RAGSystem:
                query=f"Answer the question and list the correct answer for each question. Question is {question['question']}, answers are {question['answers']}"
                print(qa.invoke(question["question"]))'''
 
-            return questions #qa.run(query) 
+            return content #qa.run(query) 
 
     def split_document(self, doc):
         text_splitter =  RecursiveCharacterTextSplitter(

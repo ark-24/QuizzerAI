@@ -39,7 +39,7 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
         {options && options.map((option: string, index: number) => (
           <div
             key={index}
-            className={`border p-4 mb-2 rounded-lg cursor-pointer 
+            className={`border-2 border-teal-400 p-4 mb-2 rounded-lg cursor-pointer hover:bg-teal-200
               ${selectedOption === option ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
               ${isSubmitted && option.charAt(0) === correctAnswer ? 'bg-green-100 border-green-500' : ''}
               ${isSubmitted && selectedOption === option && selectedOption.charAt(0) !== correctAnswer ? 'bg-red-100 border-red-500' : ''}
@@ -53,7 +53,7 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
 
       <div className="mt-4 flex justify-between">
         <button
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+          className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg--700"
           onClick={handleSubmit}
           disabled={isSubmitted}
         >
@@ -61,7 +61,7 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
         </button>
         {isSubmitted && selectedOption && (
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
             onClick={handleNextQuestion}
           >
             Next
