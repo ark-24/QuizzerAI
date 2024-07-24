@@ -61,10 +61,10 @@ const QuizPage = ({}: QuizProps) => {
         console.error("Error fetching quiz:", error);
       }
     }
-    if (quizType === "Multiple Choice") {
+    // if (quizType === "Multiple Choice") {
 
     getQuiz();
-  }
+  // }
   }, [id]);
 
   if (!quizData) {
@@ -94,16 +94,16 @@ const QuizPage = ({}: QuizProps) => {
 
   return (
     <div className='flex h-screen'>
-      <div className='w-5/12'>
+      <div className='w-4/12'>
         <PDFViewer pdf_url={fileKey ? getS3Url(fileKey) : ""}/>
       </div>
-      <div className='w-7/12 flex flex-col  justify-center items-center h-screen'  style={{
+      <div className='w-8/12 flex flex-col  justify-center items-center h-screen'  style={{
             backgroundImage: "url(/pent.png)",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}>
             <div className="flex flex-col  justify-center items-center h-screen" >
-            <h2 className="mt-20 font-semibold" >
+            <h2 className="mt-20 mb-10 font-semibold" >
                 {quizData.title}
             </h2>
         { quizType === "Multiple Choice" && (
@@ -132,7 +132,11 @@ const QuizPage = ({}: QuizProps) => {
           <Flashcards cards={quizData.content.cards} title={quizData.title} />
         )}
         { quizType === "Summary" && (
+          <>
+          {/* <div className="flex flex-col justify-center items-center h-screen relative"> */}
           <Summary content={quizData.content}/>
+          {/* </div> */}
+          </>
         )}
       </div>
     </div>

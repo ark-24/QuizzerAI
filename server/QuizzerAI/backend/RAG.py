@@ -2,6 +2,7 @@
 import json
 import os
 import time
+from django.http import JsonResponse
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -64,29 +65,31 @@ class RAGSystem:
 
 
             content_json = response.choices[0].message.content.strip()
-            content_json = content_json.strip('"```json').strip('```"') 
+            content_json = content_json.strip('"```json').strip('```"').strip('\n')
             # questions_json = questions_json.strip('"```json').strip('```"') 
 
             print("questions are: ")
-            print(content_json)
             try:
-                content = json.loads(content_json)
+                content = json.loads(content_json, strict=False)
             except json.JSONDecodeError as e:
+                print(f"Failed to parse questions JSON: {e}")
+                return {"error": "Failed to parse questions JSON"}
+            except TypeError as e:
                 print(f"Failed to parse questions JSON: {e}")
                 return {"error": "Failed to parse questions JSON"}
 
                 
 
 
-            vectorstore = PineconeVectorStore.from_texts(  
-                texts=self.split_document(content), embedding=self.embeddings,  index_name="quizzerai"
-            )  
+            # vectorstore = PineconeVectorStore.from_texts(  
+            #     texts=self.split_document(content), embedding=self.embeddings,  index_name="quizzerai"
+            # )  
 
-            qa = RetrievalQA.from_chain_type(  
-                llm=self.llm,  
-                chain_type="stuff",  
-                retriever=vectorstore.as_retriever()  
-            )
+            # qa = RetrievalQA.from_chain_type(  
+            #     llm=self.llm,  
+            #     chain_type="stuff",  
+            #     retriever=vectorstore.as_retriever()  
+            # )
             '''for question in questions["questions"]:
                query=f"Answer the question and list the correct answer for each question. Question is {question['question']}, answers are {question['answers']}"
                print(qa.invoke(question["question"]))'''

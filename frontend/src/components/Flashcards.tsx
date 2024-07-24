@@ -13,9 +13,9 @@ const Flashcards = ({cards, title}: FlashcardsProps) => {
 
 
         <div className="flex flex-col  justify-center items-center h-screen" >
-            <div className="mb-20" >
+            {/* <div className="mb-20" >
                 {title}
-            </div>
+            </div> */}
       <FlashcardArray cards={cards} 
       frontContentStyle={{
         // backgroundColor: "lightgoldenrodyellow",

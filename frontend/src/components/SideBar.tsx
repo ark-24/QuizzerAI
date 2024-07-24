@@ -80,10 +80,12 @@ const SideBar =  () => {
         {quizzes && quizzes.map((quiz: any, index:number) => (
           <Link key={index} to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
           <div key={index} className={cn("rounded-lg p-3 text-slate-300  border-red-500  flex items-center", {
-            "bg-blue-600 text-white": quiz.id === quizId,
+            "bg-blue-600 text-red": quiz.id === quizId,
             "hover:text-white": quiz.id !== quizId,
           })}>
-            {quiz.title}
+            { quiz.id === quizId ? (<span className='text-red'>{quiz.title} </span>) : (<span className='text-white'>{quiz.title} </span>) 
+            
+}
           </div>
           </Link>
         ))}
