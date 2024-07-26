@@ -47,6 +47,8 @@ const QuizPage = ({}: QuizProps) => {
   const quizType = params.get('type');
   const [currIndex, setCurrIndex] = useState<number>(1);
   const currentQ = useRef<any>();
+  const queLength = useRef<number>(0);
+
   const score = useRef<number>(0);
 
   useEffect(()=> {
@@ -55,7 +57,11 @@ const QuizPage = ({}: QuizProps) => {
         const response = await axios.get(`http://127.0.0.1:8000/api/quiz/${id}`);
         setQuizData(response.data);
         setFileKey(response.data.fileKey);
-        currentQ.current = response.data?.content?.questions[0]
+        console.log(response.data)
+        currentQ.current = response.data?.content[0]
+        queLength.current = response.data.content?.length;
+        console.log(queLength.current)
+
 
       } catch (error) {
         console.error("Error fetching quiz:", error);
@@ -64,6 +70,10 @@ const QuizPage = ({}: QuizProps) => {
     // if (quizType === "Multiple Choice") {
 
     getQuiz();
+    return () => {
+      setCurrIndex(0);
+      setQuizData(null)
+    };
   // }
   }, [id]);
 
@@ -84,13 +94,14 @@ const QuizPage = ({}: QuizProps) => {
     //   carouselRef.current.next();
     //   console.log(carouselRef.current);
     // }
-    setCurrIndex((prevIndex) => (prevIndex + 1) % quizData.content.questions.length);
+    setCurrIndex((prevIndex) => (prevIndex + 1)  % queLength.current);
     console.log((currIndex));
     
-    currentQ.current = quizData?.content?.questions[currIndex];
-    console.log(currentQ.current?.correct_answer)
+    currentQ.current = quizData?.content[currIndex];
 
   };
+
+
 
   return (
     <div className='flex h-screen'>
@@ -115,14 +126,17 @@ const QuizPage = ({}: QuizProps) => {
                   timeout={500}
                   classNames="fade"
                 >
+                  <>
                   <MultipleChoiceCard
-                    key={currIndex}
+                    currIndex={currIndex}
                     question={currentQ.current?.question}
                     options={currentQ.current?.options}
                     correctAnswer={currentQ.current?.correct_answer}
                     handleNextQuestion={handleNextQuestion}
                     handleScore={handleMCScore}
                   />
+                  <div> {currIndex+1}/{queLength.current}</div>
+                  </>
                 </CSSTransition>
               </TransitionGroup>
               </div>

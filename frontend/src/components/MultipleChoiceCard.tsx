@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-
+import { ArrowBigRight } from 'lucide-react';
 interface MultipleChoiceCardProps {
-  key: number;
+  currIndex: number;
   question: string;
   options: Array<string>;
   correctAnswer: string;
@@ -9,11 +9,13 @@ interface MultipleChoiceCardProps {
   handleScore: (isCorrect: boolean) => void;
 }
 
-const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuestion, handleScore }: MultipleChoiceCardProps) => {
+const MultipleChoiceCard = ({ currIndex, question, options, correctAnswer,handleNextQuestion, handleScore }: MultipleChoiceCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   console.log(question);
   console.log(options);
+  console.log(correctAnswer);
+
 
   
   const handleOptionChange = (option: string) => {
@@ -22,7 +24,7 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
 
   const handleSubmit = () => {
     setIsSubmitted(true);
-    if (selectedOption.charAt(0) == correctAnswer) {
+    if (selectedOption === correctAnswer) {
       handleScore(true)
     }
     
@@ -41,8 +43,8 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
             key={index}
             className={`border-2 border-teal-400 p-4 mb-2 rounded-lg cursor-pointer hover:bg-teal-200
               ${selectedOption === option ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
-              ${isSubmitted && option.charAt(0) === correctAnswer ? 'bg-green-100 border-green-500' : ''}
-              ${isSubmitted && selectedOption === option && selectedOption.charAt(0) !== correctAnswer ? 'bg-red-100 border-red-500' : ''}
+              ${isSubmitted && option === correctAnswer ? 'bg-green-100 border-green-500' : ''}
+              ${isSubmitted && selectedOption === option && selectedOption !== correctAnswer ? 'bg-red-100 border-red-500' : ''}
             `}
             onClick={() => handleOptionChange(option)}
           >
@@ -53,25 +55,25 @@ const MultipleChoiceCard = ({ question, options, correctAnswer, handleNextQuesti
 
       <div className="mt-4 flex justify-between">
         <button
-          className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg--700"
+          className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-700"
           onClick={handleSubmit}
           disabled={isSubmitted}
         >
-          Submit
+          Select
         </button>
         {isSubmitted && selectedOption && (
           <button
-            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+            className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-700"
             onClick={handleNextQuestion}
           >
-            Next
+             <ArrowBigRight />
           </button>
         )}
       </div>
 
       {isSubmitted && selectedOption && (
         <div className="mt-4">
-          {selectedOption.charAt(0) === correctAnswer ? (
+          {selectedOption === correctAnswer ? (
             <div className="text-green-600">Correct!</div>
           ) : (
             <div className="text-red-600">Incorrect. The correct answer is: {correctAnswer}</div>

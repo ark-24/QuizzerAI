@@ -14,16 +14,16 @@ const SideBar =  () => {
   const [quizzes, setQuizzes] = useState<Array<any>>([]);
   const { user } = useUser();
   const location = useLocation();
-  let quizId=""
+  const [quizId, setQuizId] = useState<string>("");
   useEffect(()=> {
   if (location.pathname.includes("quiz")) {
     if(location.pathname.split("/quiz/"))
     {
-      quizId = location.pathname.split("/quiz/")[1]
+      setQuizId(location.pathname.split("/quiz/")[1])
     }
     console.log(quizId)
   }
-},[])
+},[location])
   const handleNewQuiz = () => {
     navigate(`/dashboard`)
   }
@@ -48,14 +48,18 @@ const SideBar =  () => {
       }
     }
     getQuizzes();
-  }, []);
+
+    return () => {
+      setQuizId("")
+    }
+  }, [location]);
 
   
     return (
   <div className="w-64 bg-slate-700 h-full overflow-y-auto">
     {/* Sidebar content goes here */}
-    <Button className="w-full border-dashed flex justify-center items-center border-white border h-10" onClick={handleNewQuiz}>
-      <PlusCircle className="w-4 h-4 mr-4" />
+    <Button className="w-full border-dashed flex justify-center items-center text-teal-500 border-white border h-10" onClick={handleNewQuiz}>
+      <PlusCircle className="w-4 h-4 mr-4 " />
       New Chat
     </Button>
 
@@ -79,8 +83,8 @@ const SideBar =  () => {
       ))} */}
         {quizzes && quizzes.map((quiz: any, index:number) => (
           <Link key={index} to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
-          <div key={index} className={cn("rounded-lg p-3 text-slate-300  border-red-500  flex items-center", {
-            "bg-blue-600 text-red": quiz.id === quizId,
+          <div key={index} className={cn("rounded-lg p-3 text-slate-300 justify-center flex items-center hover:bg-slate-900", {
+            "bg-teal-600 text-red": quiz.id === quizId,
             "hover:text-white": quiz.id !== quizId,
           })}>
             { quiz.id === quizId ? (<span className='text-red'>{quiz.title} </span>) : (<span className='text-white'>{quiz.title} </span>) 

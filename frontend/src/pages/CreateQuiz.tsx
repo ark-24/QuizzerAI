@@ -148,7 +148,13 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   }));
 
   return (
-    <div className='h-full bg-green-200'>
+     <div className='h-full bg-green-200'  
+    //style={{
+    //   backgroundImage: "url(/background.jpg)",
+    //   backgroundSize: 'cover',
+    //   backgroundPosition: 'center',
+    // }}>
+    >
         <div className='flex justify-center items-center h-screen'>
     <FormGroup className=''>
     <TextField
@@ -181,7 +187,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
         <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
       </div>
       <div className='flex bg-black justify-center mt-10 text-white font-bold  rounded '>
-        <Button onClick={handleFileUpload} className='items-center flex py-2 px-4'>
+        <Button onClick={handleFileUpload} className='items-center flex py-2 px-4 hover:bg-slate-950'>
           Upload <Upload className='w-4 h-4 ml-2'/>
         </Button>
       </div>
