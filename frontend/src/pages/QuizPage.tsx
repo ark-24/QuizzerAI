@@ -46,10 +46,10 @@ const QuizPage = ({}: QuizProps) => {
   const [fileKey, setFileKey] = useState<string>();
   const quizType = params.get('type');
   const [currIndex, setCurrIndex] = useState<number>(1);
-  const currentQ = useRef<any>();
-  const queLength = useRef<number>(0);
+  // const currentQ = useRef<any>();
+  // const queLength = useRef<number>(0);
 
-  const score = useRef<number>(0);
+  // const score = useRef<number>(0);
 
   useEffect(()=> {
     const getQuiz = async () => {
@@ -58,9 +58,9 @@ const QuizPage = ({}: QuizProps) => {
         setQuizData(response.data);
         setFileKey(response.data.fileKey);
         console.log(response.data)
-        currentQ.current = response.data?.content[0]
-        queLength.current = response.data.content?.length;
-        console.log(queLength.current)
+        // currentQ.current = response.data?.content[0]
+        // queLength.current = response.data.content?.length;
+        // console.log(queLength.current)
 
 
       } catch (error) {
@@ -81,25 +81,25 @@ const QuizPage = ({}: QuizProps) => {
     return (<div>Loading...</div>);
   }
 
-  const handleMCScore = (isCorrect: boolean) => {
-    if (isCorrect) {
-      score.current = score.current + 1
+  // const handleMCScore = (isCorrect: boolean) => {
+  //   if (isCorrect) {
+  //     score.current = score.current + 1
 
-    }
-  }
+  //   }
+  // }
 
-  const handleNextQuestion = () => {
-    // if (carouselRef.current) {
-    //   // Move to the next slide
-    //   carouselRef.current.next();
-    //   console.log(carouselRef.current);
-    // }
-    setCurrIndex((prevIndex) => (prevIndex + 1)  % queLength.current);
-    console.log((currIndex));
+  // const handleNextQuestion = () => {
+  //   // if (carouselRef.current) {
+  //   //   // Move to the next slide
+  //   //   carouselRef.current.next();
+  //   //   console.log(carouselRef.current);
+  //   // }
+  //   setCurrIndex((prevIndex) => (prevIndex + 1)  % queLength.current);
+  //   console.log((currIndex));
     
-    currentQ.current = quizData?.content[currIndex];
+  //   currentQ.current = quizData?.content[currIndex];
 
-  };
+  // };
 
 
 
@@ -128,14 +128,14 @@ const QuizPage = ({}: QuizProps) => {
                 >
                   <>
                   <MultipleChoiceCard
-                    currIndex={currIndex}
-                    question={currentQ.current?.question}
-                    options={currentQ.current?.options}
-                    correctAnswer={currentQ.current?.correct_answer}
-                    handleNextQuestion={handleNextQuestion}
-                    handleScore={handleMCScore}
+                    // currIndex={currIndex}
+                    // question={currentQ.current?.question}
+                    // options={currentQ.current?.options}
+                    // correctAnswer={currentQ.current?.correct_answer}
+                    // handleNextQuestion={handleNextQuestion}
+                    // handleScore={handleMCScore}
+                    content={quizData.content}
                   />
-                  <div> {currIndex+1}/{queLength.current}</div>
                   </>
                 </CSSTransition>
               </TransitionGroup>
