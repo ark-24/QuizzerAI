@@ -105,16 +105,16 @@ const QuizPage = ({}: QuizProps) => {
 
   return (
     <div className='flex h-screen'>
-      <div className='w-4/12'>
+      <div className='w-5/12'>
         <PDFViewer pdf_url={fileKey ? getS3Url(fileKey) : ""}/>
       </div>
-      <div className='w-8/12 flex flex-col  justify-center items-center h-screen'  style={{
+      <div className='w-7/12 flex flex-col  justify-center items-center h-screen'  style={{
             backgroundImage: "url(/pent.png)",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}>
             <div className="flex flex-col  justify-center items-center h-screen" >
-            <h2 className="mt-20 mb-10 font-semibold" >
+            <h2 className="mt-20 mb-10 font-semibold text-3xl font-ubuntu" >
                 {quizData.title}
             </h2>
         { quizType === "Multiple Choice" && (

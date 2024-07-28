@@ -11,7 +11,7 @@ interface FileUploadProps {
 
 const FileUpload = ({ isUploading, isPending, onFileDrop }: FileUploadProps) => {
 
-const {getRootProps,  getInputProps} = useDropzone({
+const {getRootProps,  getInputProps, acceptedFiles} = useDropzone({
   accept: {"application/pdf": [".pdf"]},
   maxFiles: 1,
   onDrop: async (acceptedFiles) => {

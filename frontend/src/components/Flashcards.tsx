@@ -16,13 +16,16 @@ const Flashcards = ({cards, title}: FlashcardsProps) => {
             {/* <div className="mb-20" >
                 {title}
             </div> */}
-      <FlashcardArray cards={cards} 
+      {cards && <FlashcardArray cards={cards} 
       frontContentStyle={{
         // backgroundColor: "lightgoldenrodyellow",
         display: "flex",
         justifyContent: "center",
         textAlign: "center",
         alignItems: "center",
+        fontFamily: 'font-lato',
+        fontSize: 'large',
+        border: 'solid black'
           
           
       }}
@@ -32,8 +35,11 @@ const Flashcards = ({cards, title}: FlashcardsProps) => {
         justifyContent: "center",
         textAlign: "center",
         alignItems: "center",
+        fontFamily: 'font-lato',
+        fontSize: 'large',
+        border: 'solid black'
 
-      }}/>
+      }}/>}
     </div>
     )
 

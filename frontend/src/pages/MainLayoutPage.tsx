@@ -7,7 +7,7 @@ import { UserButton } from '@clerk/clerk-react';
 const MainLayoutPage = () => {
   return (
     <div className="flex h-screen">
-      <div className="w-64 bg-gray-600">
+      <div className="w-64 bg-stone-300">
         <SideBar />
       </div>
       <div className="flex-1">

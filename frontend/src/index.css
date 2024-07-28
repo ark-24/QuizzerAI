@@ -1,3 +1,6 @@
+
+@import '@fontsource/ubuntu';
+@import '@fontsource/lato';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

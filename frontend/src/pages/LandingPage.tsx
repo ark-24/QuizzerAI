@@ -38,6 +38,10 @@ const LandingPage = () => {
             Join millions of students, researchers and professionals to instantly
             answer questions and understand research with AI
           </p>
+          <div className='flex justify-center mt-10'>
+            <h1 className='text-2xl font-lato'> How Does it Work? </h1>
+
+          </div>
           <div className="mt-20">
           <SignedOut>
         <SignInButton afterSignInUrl='/dashboard'>

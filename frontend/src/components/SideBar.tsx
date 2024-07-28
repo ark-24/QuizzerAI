@@ -56,11 +56,11 @@ const SideBar =  () => {
 
   
     return (
-  <div className="w-64 bg-slate-700 h-full overflow-y-auto">
+  <div className="w-64 bg-stone-800 h-full overflow-y-auto">
     {/* Sidebar content goes here */}
-    <Button className="w-full border-dashed flex justify-center items-center text-teal-500 border-white border h-10" onClick={handleNewQuiz}>
+    <Button className="w-full border-dashed flex justify-center items-center text-white font-ubuntu border-white border h-10" onClick={handleNewQuiz}>
       <PlusCircle className="w-4 h-4 mr-4 " />
-      New Chat
+      New Quiz
     </Button>
 
     <div className="flex flex-col gap-2 mt-4">
@@ -83,7 +83,7 @@ const SideBar =  () => {
       ))} */}
         {quizzes && quizzes.map((quiz: any, index:number) => (
           <Link key={index} to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
-          <div key={index} className={cn("rounded-lg p-3 text-slate-300 justify-center flex items-center hover:bg-slate-900", {
+          <div key={index} className={cn("rounded-lg p-3 text-slate-300 justify-center flex items-center font-lato hover:bg-slate-900", {
             "bg-teal-600 text-red": quiz.id === quizId,
             "hover:text-white": quiz.id !== quizId,
           })}>

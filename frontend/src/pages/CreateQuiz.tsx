@@ -17,6 +17,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CreateIcon from '@mui/icons-material/Create';
 import { useNavigate } from 'react-router-dom';
+import FormHelperText from '@mui/material/FormHelperText';
+import { Pencil } from 'lucide-react';
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+
 
 interface CreateQuizProps {
   userEmail: string;
@@ -27,10 +33,13 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   const [uploadedFile, setUploadedFile] = useState<File|null>(null);
   const [quizType, setQuizType] = useState<string>('');
   const [title, setTitle] = useState<string>();
+  const [helperText, setHelperText] = useState('');
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuizType((event.target as HTMLInputElement).value);
+    setError(false);
     
   };
 
@@ -67,17 +76,12 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
         console.log("done ", data)
     }
   });
-
- const navigateToChat = (chatId: string) => {
-
-    switch(quizType) {
-      
-    }
-  
-
- }
   
   const handleFileUpload = async () => {
+    if (helperText === '') {
+        setHelperText("Select a Quiz Type")
+        setError(true)
+    }
     if(uploadedFile) {
       setIsUploading(true);
       const data = await uploadToS3(uploadedFile);
@@ -133,7 +137,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   '&.Mui-checked .MuiSvgIcon-root': {
     color: '#000000',
     borderRadius: '50%',
-    backgroundColor: '#e3f2fd',
+    // backgroundColor: '#e3f2fd',
     padding: '4px',
   },
   '& .MuiTouchRipple-root': {
@@ -156,33 +160,56 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
     // }}>
     >
         <div className='flex justify-center items-center h-screen'>
-    <FormGroup className=''>
-    <TextField
+    <FormGroup>
+    <h2 className='text-5xl font-lato mb-24'> Create A Quiz </h2>
+
+    {/* <TextField
         id="input-with-icon-textfield"
         label="Title"
         onChange={handleTitleChange}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <CreateIcon />
+              <Pencil color='black' />
             </InputAdornment>
           ),
         }}
+        sx={{
+          backgroundColor: "white",
+          border: '2px solid #000', // Change color and width as needed
+          borderRadius: '10px', // Adjust the radius to achieve desired rounding
+          padding: '10px', // Optional: Add padding inside the border
+        }}
         variant="standard"
+      /> */}
+            {/* <Label htmlFor="picture">Picture</Label> */}
+            <div className="relative flex items-center max-w-2xl ">
+    <Pencil className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
+      <Input
+        placeholder="Title"
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+        className=" pl-8 border-black border ring-black ring-2"
       />
+ </div>
+
 
   <FormLabel id="demo-controlled-radio-buttons-group" className='text-center mt-10'>Quiz Type</FormLabel>
   <RadioGroup
     aria-labelledby="demo-controlled-radio-buttons-group"
     name="controlled-radio-buttons-group"
     value={quizType}
+    sx={{
+      fontSize: "xl"
+    }}
     onChange={handleChange}
   >
-    <FormControlLabel value="Multiple Choice" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Multiple Choice" />
-    <FormControlLabel value="Flashcards" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />}/>} label="Flashcards" />
-    <FormControlLabel value="Summary" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Summary" />
+    <FormControlLabel value="Multiple Choice"   sx={{ fontSize: "xl"}} className="font-lato text-xl" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Multiple Choice" />
+    <FormControlLabel value="Flashcards" sx={{ fontSize: "xl"}} control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />}/>} label="Flashcards" />
+    <FormControlLabel value="Summary"  sx={{ fontSize: "xl"}} control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Summary" />
 
   </RadioGroup>
+  {quizType === '' && (<FormHelperText error={error} className='text-red-400 flex text-center justify-center align-middle'>{helperText}</FormHelperText>)}
   <div className='mt-8 w-full'>
         <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
       </div>
@@ -191,8 +218,8 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
           Upload <Upload className='w-4 h-4 ml-2'/>
         </Button>
       </div>
+      
 </FormGroup>
-
 
       </div>
     </div>
