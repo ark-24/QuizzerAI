@@ -4,6 +4,7 @@ import os
 import time
 from django.http import JsonResponse
 from dotenv import load_dotenv
+from marshmallow import ValidationError
 from pinecone import Pinecone, ServerlessSpec
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 # from langchain.vectorstores import Pinecone
@@ -73,10 +74,10 @@ class RAGSystem:
                 content = json.loads(content_json, strict=False)
             except json.JSONDecodeError as e:
                 print(f"Failed to parse questions JSON: {e}")
-                return {"error": "Failed to parse questions JSON"}
+                return ValidationError({"error": "Failed to parse questions JSON"})
             except TypeError as e:
                 print(f"Failed to parse questions JSON: {e}")
-                return {"error": "Failed to parse questions JSON"}
+                return ValidationError({"error": "Failed to parse questions JSON"})
 
                 
 

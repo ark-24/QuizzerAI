@@ -1,6 +1,11 @@
 
 @import '@fontsource/ubuntu';
 @import '@fontsource/lato';
+@import '@fontsource/Inter';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/roboto-slab';
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

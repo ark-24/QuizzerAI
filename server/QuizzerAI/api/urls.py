@@ -37,8 +37,9 @@ urlpatterns = [
     path('quizzes/<str:email>/', views.QuizListView.as_view(), name='quizzes'),   
     # path("read-file/", views.get_file_from_AWS,name="get-file-from-AWS"),
     path("create-quiz/", views.create_quiz,name="create-quiz"),
-
-
+    path('config-stripe/', views.stripe_config),
+    # path('create-checkout-session/<str:payType>/', views.create_checkout_session), # new
+    path('create-checkout-session/<str:payType>/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
 
     path('', include(router.urls)),
 

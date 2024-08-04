@@ -13,27 +13,15 @@ import QuizPage from "./pages/QuizPage"
 import { SignedIn } from '@clerk/clerk-react';
 import Providers from "./components/Providers";
 import SideBar from '@/components/SideBar';
-
+import { Toaster } from 'react-hot-toast';
 // import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
+
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<LandingPage />} />
-      {/* <Route
-        path="/dashboard"
-        element={
-            <SignedIn>
-             
-      <div className="w-1000 bg-gray-600">
-
-      <DashboardPage />
-</div>
-              </SignedIn>
-              
-
-        }
-      /> */}
        <Route
             element={
               <SignedIn>
@@ -54,7 +42,9 @@ function App() {
   return (
     <>
       <Providers>
+
         <RouterProvider router={router} />
+        <Toaster position="top-right" reverseOrder={false} />
       </Providers>
     </>
   );

@@ -6,12 +6,12 @@ import Checkbox from '@mui/material/Checkbox';
 import FileUpload from '@/components/FileUpload';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
-import {Upload } from 'lucide-react';
+import {Copy, Upload } from 'lucide-react';
 import Radio from '@mui/material/Radio';
 import { toast } from "react-hot-toast";
 import { uploadToS3 } from '@/lib/s3';
 import { useMutation } from "@tanstack/react-query";
-import { FormControl, FormLabel, InputAdornment, RadioGroup, TextField, alpha  } from '@mui/material';
+import { FormControl, FormLabel, InputAdornment,RadioGroup, TextField, alpha  } from '@mui/material';
 import {  styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -21,6 +21,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import { Pencil } from 'lucide-react';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 
 
@@ -62,11 +63,13 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
         userEmail,
         title : title ? title : fileName
       }) .then(response => {
-            toast.success("Chat created!");
+            toast.success("Quiz created!");
             console.log('Response:', response.data);
             navigate(`/quiz/${response.data.quizId}?type=${quizType}`)
           })
           .catch(error => {
+            toast.error("Error Generating Quiz.");
+
             console.error('Error:', error);
           });
           
@@ -93,7 +96,6 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
           }
           mutate(data, {
             onSuccess: (data) => {
-              toast.success("Chat created!");
               console.log(data);
               // navigate(`/chat/${chat_id}`);
             },
@@ -125,7 +127,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
     WebkitTextFillColor: 'transparent',
   },
   '&:hover': {
-    backgroundColor: 'rgba(30, 136, 229, 0.15)',
+    backgroundColor: 'rgba(39, 245, 200, 0.8)',
   },
   '& .MuiSvgIcon-root': {
     transition: 'transform 0.3s ease-in-out, color 0.3s ease-in-out',
@@ -152,7 +154,11 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   }));
 
   return (
-     <div className='h-full bg-green-200'  
+     <div className='h-full' style={{
+      backgroundImage: "url(/back.jpg)",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }} 
     //style={{
     //   backgroundImage: "url(/background.jpg)",
     //   backgroundSize: 'cover',
@@ -163,26 +169,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
     <FormGroup>
     <h2 className='text-5xl font-lato mb-24'> Create A Quiz </h2>
 
-    {/* <TextField
-        id="input-with-icon-textfield"
-        label="Title"
-        onChange={handleTitleChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Pencil color='black' />
-            </InputAdornment>
-          ),
-        }}
-        sx={{
-          backgroundColor: "white",
-          border: '2px solid #000', // Change color and width as needed
-          borderRadius: '10px', // Adjust the radius to achieve desired rounding
-          padding: '10px', // Optional: Add padding inside the border
-        }}
-        variant="standard"
-      /> */}
-            {/* <Label htmlFor="picture">Picture</Label> */}
+   
             <div className="relative flex items-center max-w-2xl ">
     <Pencil className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
       <Input
@@ -193,28 +180,55 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
       />
  </div>
 
-
   <FormLabel id="demo-controlled-radio-buttons-group" className='text-center mt-10'>Quiz Type</FormLabel>
   <RadioGroup
+  className='font-robotoSlab' 
     aria-labelledby="demo-controlled-radio-buttons-group"
     name="controlled-radio-buttons-group"
     value={quizType}
     sx={{
-      fontSize: "xl"
+      fontSize: "xl",
+      fontFamily: "inter, Times New Roman, serif"
     }}
     onChange={handleChange}
   >
-    <FormControlLabel value="Multiple Choice"   sx={{ fontSize: "xl"}} className="font-lato text-xl" control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Multiple Choice" />
-    <FormControlLabel value="Flashcards" sx={{ fontSize: "xl"}} control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />}/>} label="Flashcards" />
-    <FormControlLabel value="Summary"  sx={{ fontSize: "xl"}} control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="Summary" />
+    <div className='flex items-center relative mt-4'>
+    <FormControlLabel value="Multiple Choice"  control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="" />
+    <span className='font-lato text-lg ml-2'>Multiple Choice</span>
+    </div>
+    <div className='flex items-center relative mt-2'>
+    <FormControlLabel value="Flashcards" sx={{ fontSize: "xl"}} control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />}/>} label="" />
+    <span className='font-lato text-lg ml-2'>Flashcards</span>
+    
+    </div>
+    <div className='flex items-center relative mt-2'>
+    <FormControlLabel value="Summary"  sx={{ fontSize: "xl"}} control={<CustomRadio   icon={<RadioButtonUncheckedIcon />} checkedIcon={<CheckCircleIcon />} />} label="" />
+    <span className='font-lato text-lg ml-2'>Summary</span>
+    
+    </div>
 
-  </RadioGroup>
+  </RadioGroup> 
+
+
+   {/* <div className='flex justify-start'>
+<RadioGroup className=" checked:scale-110"  >
+  <div className="flex items-center space-x-2 my-4 text-lg font-inter ">
+    <RadioGroupItem  className=" border-black "  value="option-one" id="option-one" />
+    <Label className="text-xl" htmlFor="option-one">Option One</Label>
+  </div>
+  <div className="flex items-center space-x-2 checked:bg-slate-500 font-ubuntu font-xl ">
+    <RadioGroupItem className="border-black   " value="option-two" id="option-two" />
+    <Label htmlFor="option-two">Option Two</Label>
+  </div> */}
+
+
+{/* </div> */}
   {quizType === '' && (<FormHelperText error={error} className='text-red-400 flex text-center justify-center align-middle'>{helperText}</FormHelperText>)}
   <div className='mt-8 w-full'>
         <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
       </div>
-      <div className='flex bg-black justify-center mt-10 text-white font-bold  rounded '>
-        <Button onClick={handleFileUpload} className='items-center flex py-2 px-4 hover:bg-slate-950'>
+      <div className='flex bg-black justify-center mt-10 text-white font-bold transition-all hover:scale-110   rounded '>
+        <Button onClick={handleFileUpload} className='items-center flex py-2 px-4'>
           Upload <Upload className='w-4 h-4 ml-2'/>
         </Button>
       </div>
@@ -222,6 +236,38 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
 </FormGroup>
 
       </div>
+      <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Share</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md text-white bg-black">
+        <DialogHeader>
+          <DialogTitle> Share link</DialogTitle>
+          <DialogDescription>
+            Anyone who has this link will be able to view this.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center space-x-2">
+          <div className="grid flex-1 gap-2">
+            <Label htmlFor="link" className="sr-only">
+              Link
+            </Label>
+            <Input
+              id="link"
+              defaultValue="https://ui.shadcn.com/docs/installation"
+              readOnly
+            />
+          </div>
+          <Button type="submit" size="sm" className="px-3">
+            <span className="sr-only">Copy</span>
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+        <DialogFooter className="sm:justify-start">
+         
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </div>
   )
 }

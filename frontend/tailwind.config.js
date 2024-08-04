@@ -9,6 +9,10 @@ export default {
       fontFamily: {
         ubuntu: 'ubuntu, Times New Roman, serif',
         lato: 'lato, Times New Roman, serif',
+        inter: 'inter, Times New Roman, serif',
+        robotoSlab: 'roboto-slab, Times New Roman, serif',
+
+
         
     },
     },

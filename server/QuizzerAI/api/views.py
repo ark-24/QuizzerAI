@@ -1,6 +1,6 @@
 import json
 from PyPDF2 import PdfReader
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from numpy import generic
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
@@ -20,7 +20,7 @@ from backend.pdf_extraction import extractText
 from backend.RAG import RAGSystem
 from backend.createQuiz import generate_multiple_choice, generate_flashcards, generate_summary
 from rest_framework import generics 
-
+import stripe
 
 load_dotenv()
 
@@ -121,7 +121,58 @@ def get_quiz(request):
             return JsonResponse({"error": "Email not provided"}, status=400)  
     else: 
         return HttpResponseNotFound("Sorry this method is not supported") 
+
+
+@csrf_exempt
+def stripe_config(request):
+    if request.method == 'GET':
+        stripe_config = {'publicKey': os.environ.get('STRIPE_PUBLISHABLE_KEY')}
+        return JsonResponse(stripe_config, safe=False)
     
+
+class CreateCheckoutSessionView(APIView):
+    def get(self, request, payType, *args, **kwargs):
+    # if request.method == 'GET':
+        session = None
+
+        stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+        # pay_type = request.GET.get("payType")
+        if payType == "One-Month":
+            lineItems = [{
+                        'price_data': {
+                            'currency': 'usd',
+                            'product_data': {
+                            'name': 'One-Month Subscription',
+                            },
+                            'unit_amount': 2000,
+                        },
+                        'quantity': 1,
+                        }]
+                           
+        else:
+            lineItems = [{
+                        'price_data': {
+                            'currency': 'usd',
+                            'product_data': {
+                            'name': 'One-Time Subscription',
+                            },
+                            'unit_amount': 100,
+                        },
+                        'quantity': 1,
+                        }
+                        ]
+        session = stripe.checkout.Session.create(
+                        line_items=lineItems,
+                        mode='payment',
+                        success_url='http://127.0.0.1:5173/dashboard',
+                        cancel_url='http://127.0.0.1:5173/dashboard',
+                        
+                    )
+
+
+        return Response({"url": session.url}, status=200)
+
+
 @csrf_exempt
 def create_quiz(request):
     if request.method == "POST":
@@ -140,21 +191,26 @@ def create_quiz(request):
             content = None
             match quiz_type:
                 case "Multiple Choice":
-                    content = generate_multiple_choice(response)
-                    print(content)
+                    try:
+                        content = generate_multiple_choice(response)
+                    except:
+                        return JsonResponse({"error": "Error Generating Study Document"},status=500)
                 
                 case "Flashcards": 
-                    content = generate_flashcards(response)
-                    print(content)
-
+                    try:
+                        content = generate_flashcards(response)
+                    except:
+                        return JsonResponse({"error": "Error Generating Study Document"},status=500)
 
                 case "Summary":
-                    print("in case sum")
-                    content = generate_summary(response)
-                    print(content)
+                    try:
+                        content = generate_summary(response)
+                    except:
+                        return JsonResponse({"error": "Error Generating Study Document"},status=500)
 
-            #if content is None:
-             #   return JsonResponse({"error": "Error generating study document..."},status=500)
+
+            if content is None:
+               return JsonResponse({"error": "Error generating study document..."},status=500)
             quiz = request.body
             quiz_dict = json.loads(quiz)
             new_quiz = models.Quiz(fileKey=file_key, fileName=file_name, user_id=user_id, quizType=quiz_type, content=content, title=title)

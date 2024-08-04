@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Inbox } from 'lucide-react'
+import { Inbox, Check } from 'lucide-react'
 import {useDropzone} from 'react-dropzone';
 import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface FileUploadProps {
   isPending: boolean;
@@ -10,11 +11,20 @@ interface FileUploadProps {
 }
 
 const FileUpload = ({ isUploading, isPending, onFileDrop }: FileUploadProps) => {
+  const [file, setFile] = useState<File[]|null>(null)
+
+  useEffect(()=> {
+
+    return () => {
+      setFile(null)
+    }
+  },[])
 
 const {getRootProps,  getInputProps, acceptedFiles} = useDropzone({
   accept: {"application/pdf": [".pdf"]},
   maxFiles: 1,
   onDrop: async (acceptedFiles) => {
+    setFile(acceptedFiles)
     console.log(acceptedFiles)
     const file = acceptedFiles[0]
     if (file.size > 10 * 1024 * 1024)
@@ -41,8 +51,17 @@ const {getRootProps,  getInputProps, acceptedFiles} = useDropzone({
         ) : (
         
         <>
-          <Inbox className='w-10 h-10 text-green-500'/>
+          {file !== null ? 
+          <>
+          <Check className='w-10 h-10 text-green-500'/>
+          <p className='mt-2 text-sm text-slate-400'>PDF Uploaded </p>
+          </>
+          : 
+            <>
+            <Inbox className='w-10 h-10 text-green-500'/>
           <p className='mt-2 text-sm text-slate-400'> Drop PDF Here</p>
+          </>
+          }
         </>)
 }
       </div>
