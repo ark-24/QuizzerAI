@@ -11,6 +11,8 @@ export default {
         lato: 'lato, Times New Roman, serif',
         inter: 'inter, Times New Roman, serif',
         robotoSlab: 'roboto-slab, Times New Roman, serif',
+        roboto: 'roboto, Times New Roman, serif',
+
 
 
         

@@ -14,6 +14,8 @@ import { SignedIn } from '@clerk/clerk-react';
 import Providers from "./components/Providers";
 import SideBar from '@/components/SideBar';
 import { Toaster } from 'react-hot-toast';
+import { QuizProvider } from '@/lib/QuizContext';
+
 // import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 
 
@@ -42,9 +44,11 @@ function App() {
   return (
     <>
       <Providers>
-
+      <QuizProvider>
         <RouterProvider router={router} />
         <Toaster position="top-right" reverseOrder={false} />
+        </QuizProvider>
+
       </Providers>
     </>
   );

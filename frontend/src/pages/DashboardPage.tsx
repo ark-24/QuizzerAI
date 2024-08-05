@@ -1,18 +1,19 @@
 import { UserButton, useUser } from '@clerk/clerk-react'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import type { UserResource } from '@clerk/types';
 import SideBar from '@/components/SideBar';
 import CreateQuiz from './CreateQuiz';
+import { useQuiz } from '@/lib/QuizContext';
 
 const DashboardPage = () => {
 
   const [currentUser, setcurrentUser] = useState<UserResource>();
   const [userEmail, setUserEmail] = useState<string>("");
-  
-
   const { user } = useUser();
 
+  const { quizzes, quizCount } = useQuiz();
+  console.log(quizCount)
   console.log(currentUser)
   useEffect(()=> {
     if (user && user?.primaryEmailAddress?.emailAddress ) {

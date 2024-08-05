@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -167,7 +167,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
     >
         <div className='flex justify-center items-center h-screen'>
     <FormGroup>
-    <h2 className='text-5xl font-lato mb-24'> Create A Quiz </h2>
+    <h2 className='text-5xl font-roboto mb-24'> Create A Quiz </h2>
 
    
             <div className="relative flex items-center max-w-2xl ">
@@ -180,7 +180,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
       />
  </div>
 
-  <FormLabel id="demo-controlled-radio-buttons-group" className='text-center mt-10'>Quiz Type</FormLabel>
+  <div id="demo-controlled-radio-buttons-group" className='text-center mt-10 text-xl'>Quiz Type</div>
   <RadioGroup
   className='font-robotoSlab' 
     aria-labelledby="demo-controlled-radio-buttons-group"
@@ -236,7 +236,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
 </FormGroup>
 
       </div>
-      <Dialog>
+      {/* <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">Share</Button>
       </DialogTrigger>
@@ -247,7 +247,7 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
             Anyone who has this link will be able to view this.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 ">
           <div className="grid flex-1 gap-2">
             <Label htmlFor="link" className="sr-only">
               Link
@@ -264,10 +264,12 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
           </Button>
         </div>
         <DialogFooter className="sm:justify-start">
-         
+        <DialogClose asChild={true}>
+
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+    </Dialog> */}
     </div>
   )
 }

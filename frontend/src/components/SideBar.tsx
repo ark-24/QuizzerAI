@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useRef, useState } from 'react'
 import { MessageCircle, PlusCircle, CircleDot, SquareCheck, RectangleEllipsis, ScrollText, Calendar, CreditCard, WalletCards    } from "lucide-react";
 import { Button } from './ui/button';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
-import {getCurrentUserEmail} from '../lib/currentUser';
+import {getCurrentUserEmail, getCurrentUserObj} from '../lib/currentUser';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
 import { Link } from "react-router-dom";
@@ -34,7 +34,12 @@ const SideBar =  () => {
   const { user } = useUser();
   const location = useLocation();
   const [quizId, setQuizId] = useState<string>("");
-  const [stripeObj, setStripeObj] = useState<any>(null); 'Promise<Stripe|null> | null'
+  // const [stripeObj, setStripeObj] = useState<any>(null); 'Promise<Stripe|null> | null'
+  const userEmail = getCurrentUserEmail();
+  const userObj = getCurrentUserObj();
+  const quizCount = useRef(0)
+  console.log(userObj);
+  const QuizContext = createContext<Number>(0);
 
   useEffect(()=> {
   if (location.pathname.includes("quiz")) {
@@ -57,26 +62,24 @@ useEffect(() => {
 
 // Initialize Stripe.js
   const stripe = loadStripe(response.data.publicKey);
-  setStripeObj(stripe)
+  // setStripeObj(stripe)
   console.log(stripe);
     }
     catch (error) {
       console.error("Error fetching quiz:", error);
     }
-
 }
-
   configStripe();
 
 },[])
+
   const handleNewQuiz = () => {
     navigate(`/dashboard`)
   }
 
-
-  const handleSubscriptions = async (payType:string) => {
+  const handleSubscriptions = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/create-checkout-session/${payType}`)
+      const response = await axios.patch(`http://127.0.0.1:8000/api/create-subscription/`,{email:userEmail})
       console.log(response.data);
     
       // return stripeObj.redirectToCheckout({sessionId: response.data.sessionId})
@@ -94,6 +97,7 @@ useEffect(() => {
         if (userEmail) {
         const response = await axios.get(`http://127.0.0.1:8000/api/quizzes/${userEmail}`);
         setQuizzes(response.data);
+        quizCount.current = response.data.length
         console.log(response.data);
         }
         else {
@@ -114,6 +118,7 @@ useEffect(() => {
 
   
     return (
+      <QuizContext.Provider value={quizCount.current}>
   <div className="w-64 bg-slate-600 h-full overflow-y-auto soff p-4">
     {/* Sidebar content goes here */}
     <Button className="w-full border-dashed flex rounded-lg justify-center items-center hover:bg-slate-800 text-white font-ubuntu border-white border h-10" onClick={handleNewQuiz}>
@@ -122,23 +127,6 @@ useEffect(() => {
     </Button>
 
     <div className="flex flex-col gap-2 mt-4">
-      {/* Render chat items here */}
-      {/* Replace this with your chat item rendering logic */}
-      {/* {chats.map((chat) => (
-        <Link key={chat.id} href={`/chat/${chat.id}`}>
-          <div
-            className={cn("rounded-lg p-3 text-slate-300 flex items-center", {
-              "bg-blue-600 text-white": chat.id === chatId,
-              "hover:text-white": chat.id !== chatId,
-            })}
-          >
-            <MessageCircle className="mr-2" />
-            <p className="w-full overflow-hidden text-sm truncate whitespace-nowrap text-ellipsis">
-              {chat.pdfName}
-            </p>
-          </div>
-        </Link>
-      ))} */}
         {quizzes && quizzes.map((quiz: any, index:number) => (
           <Link key={index} to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
           <div key={index} className={cn("rounded-lg p-3 group  text-slate-300 flex items-center font-lato hover:bg-slate-100 ", {
@@ -157,12 +145,9 @@ useEffect(() => {
     ))}
 <div className=' bottom-0 h-16 object-bottom fixed'>
   <Separator className="w-full bottom-2 h-px bg-slate-500 " />
-  {/* <Divider sx={{
-    paddingTop: '10 px'
-  }}/> */}
   <DropdownMenu>
       <DropdownMenuTrigger asChild>
-<Button className=" border p-4 bg-gradient-to-r from-teal-500 to-cyan-500 flex rounded-lg hover:border-indigo-600 mt-2 justify-center align-middle bottom-0 items-center hover:bg-slate-800  text-white font-ubuntu border-white  h-10" >
+<Button className=" border p-4 bg-gradient-to-r from-teal-500 to-cyan-500 flex rounded-lg hover:border-green-800 mt-2 justify-center align-middle bottom-0 items-center hover:bg-slate-800  text-white font-ubuntu border-white  h-10" >
       <WalletCards className="w-4 h-4 mr-4 " />
       Manage Subscription
     </Button>
@@ -182,25 +167,22 @@ useEffect(() => {
 <DropdownMenuContent className="w-56 bg-white">
         {/* <DropdownMenuLabel>Appearance</DropdownMenuLabel> */}
         {/* <DropdownMenuSeparator /> */}
-        <DropdownMenuItem className='bg-white hover:bg-gray-200' onClick={() => handleSubscriptions("One-Time")}>
+        <DropdownMenuItem className='bg-white hover:bg-gray-200' onClick={() => handleSubscriptions()}>
              <CreditCard className="mr-2 h-4 w-4" /> 
             <span>One-Time</span>
           </DropdownMenuItem>
-          <DropdownMenuSeparator className='bg-black'/>
+          {/* <DropdownMenuSeparator className='bg-black'/>
           <DropdownMenuItem className='bg-white hover:bg-gray-200' onClick={() => handleSubscriptions("One-Month")}>
             <Calendar className="mr-2 h-4 w-4" /> 
             <span>1 Month</span>
-          </DropdownMenuItem>
-        
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
   </DropdownMenu>
-
     </div>
-
     </div>
-    
 
   </div>
+  </QuizContext.Provider>
     );
 }
 

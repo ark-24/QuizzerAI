@@ -101,6 +101,20 @@ def check_users(request):
     else: 
         return HttpResponseNotFound("Sorry this method is not supported")
     
+@csrf_exempt
+def get_user(request):
+    if request.method == "GET":
+        email = request.GET.get("email")
+        if email:
+            user_obj = models.User.objects.get(email=email)
+            user_data = serializers.UserSerializer(user_obj)
+            return JsonResponse(user_data.data, status=200)
+        else:
+
+            return JsonResponse({"error": "Email not provided"}, status=400)
+    else: 
+        return HttpResponseNotFound("Sorry this method is not supported")    
+    
 def get_user_id(email):
         if email:
             user = models.User.objects.get(email=email)
@@ -130,37 +144,46 @@ def stripe_config(request):
         return JsonResponse(stripe_config, safe=False)
     
 
-class CreateCheckoutSessionView(APIView):
-    def get(self, request, payType, *args, **kwargs):
-    # if request.method == 'GET':
+# class CreateCheckoutSessionView(APIView):
+# def post(self, request, payType, *args, **kwargs):
+@csrf_exempt
+def create_subscription(request):
+    if request.method == 'PATCH':
         session = None
+        reqBody = request.body
+        data = json.loads(reqBody)
+        user_email = data["email"]
+
+        user_id = get_user_id(user_email)
+
+
 
         stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
         # pay_type = request.GET.get("payType")
-        if payType == "One-Month":
-            lineItems = [{
-                        'price_data': {
-                            'currency': 'usd',
-                            'product_data': {
-                            'name': 'One-Month Subscription',
-                            },
-                            'unit_amount': 2000,
-                        },
-                        'quantity': 1,
-                        }]
+        # if payType == "One-Month":
+            # lineItems = [{
+            #             'price_data': {
+            #                 'currency': 'usd',
+            #                 'product_data': {
+            #                 'name': 'One-Month Subscription',
+            #                 },
+            #                 'unit_amount': 2000,
+            #             },
+            #             'quantity': 1,
+            #             }]
                            
-        else:
-            lineItems = [{
-                        'price_data': {
-                            'currency': 'usd',
-                            'product_data': {
-                            'name': 'One-Time Subscription',
-                            },
-                            'unit_amount': 100,
+        # else:
+        lineItems = [{
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                        'name': 'One-Time Subscription',
                         },
-                        'quantity': 1,
-                        }
-                        ]
+                        'unit_amount': 100,
+                    },
+                    'quantity': 1,
+                    }
+                    ]
         session = stripe.checkout.Session.create(
                         line_items=lineItems,
                         mode='payment',
@@ -169,8 +192,10 @@ class CreateCheckoutSessionView(APIView):
                         
                     )
 
-
-        return Response({"url": session.url}, status=200)
+        user = models.User.objects.get(id=user_id )
+        user.is_sub = True
+        user.save()
+        return JsonResponse({"url": session.url}, status=200)
 
 
 @csrf_exempt

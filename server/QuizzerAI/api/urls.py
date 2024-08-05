@@ -32,6 +32,7 @@ urlpatterns = [
     path("register/", views.RegisterNewUser.as_view(),name="register"),
     path("login/", obtain_auth_token,name="create_token"),
     path("check-user/", views.check_users,name="check-user"),
+    path("get-user/", views.get_user,name="get-user"),
     path("get-quiz/", views.get_quiz,name="get-quiz"),
     path('quiz/<uuid:quiz_id>/', views.QuizDetailView.as_view(), name='quiz-detail'),   
     path('quizzes/<str:email>/', views.QuizListView.as_view(), name='quizzes'),   
@@ -39,7 +40,7 @@ urlpatterns = [
     path("create-quiz/", views.create_quiz,name="create-quiz"),
     path('config-stripe/', views.stripe_config),
     # path('create-checkout-session/<str:payType>/', views.create_checkout_session), # new
-    path('create-checkout-session/<str:payType>/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
+    path('create-subscription/', views.create_subscription, name='create-subscription'),
 
     path('', include(router.urls)),
 

@@ -62,6 +62,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=100,blank=True)
     last_name = models.CharField(max_length=100,blank=True)
     image_url = models.CharField(max_length=300,blank=True)
+    is_sub = models.BooleanField(default=False)
     password = None
 
     USERNAME_FIELD = 'email' 

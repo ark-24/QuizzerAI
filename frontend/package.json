@@ -20,6 +20,7 @@
     "@fontsource-variable/roboto-slab": "^5.0.20",
     "@fontsource/inter": "^5.0.19",
     "@fontsource/lato": "^5.0.21",
+    "@fontsource/roboto": "^5.0.14",
     "@fontsource/ubuntu": "^5.0.13",
     "@hookform/resolvers": "^3.9.0",
     "@iframe-resizer/react": "^5.2.1",
