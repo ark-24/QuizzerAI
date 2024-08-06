@@ -22,12 +22,24 @@ import { Pencil } from 'lucide-react';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useQuiz } from '@/lib/QuizContext';
+import { getCurrentUserEmail, getCurrentUserObj } from '@/lib/currentUser';
 
 
 
 interface CreateQuizProps {
   userEmail: string;
 }
+
+interface User {
+    id: string;
+    email: string;
+    first_name: string;
+    last_name: string; 
+    image_url: string;
+    is_sub: boolean;
+}
+
 
 const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -37,6 +49,30 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   const [helperText, setHelperText] = useState('');
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const [userData, setUserData] = useState<User|null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const { quizCount } = useQuiz();
+  const user_email = getCurrentUserEmail();
+
+  useEffect(()=> {
+    const getUserData = async () => {
+    if (user_email) {
+      try {
+        
+        const response = await axios.get(`http://127.0.0.1:8000/api/get-user?email=${encodeURIComponent(user_email)}`)
+        setUserData(response.data)
+        console.log(response.data);
+        
+        
+      } catch (error) {
+        console.log("Error retrieving user", error);
+        
+      }
+    }
+
+  }
+  getUserData();
+  },[])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuizType((event.target as HTMLInputElement).value);
@@ -81,6 +117,16 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   });
   
   const handleFileUpload = async () => {
+
+    if (!userData?.is_sub && quizCount > 7) {
+      setIsDialogOpen(true);
+      console.log("not pro");
+      
+      return;
+    }
+
+
+
     if (helperText === '') {
         setHelperText("Select a Quiz Type")
         setError(true)
@@ -227,8 +273,8 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   <div className='mt-8 w-full'>
         <FileUpload isUploading={isUploading} isPending={isPending} onFileDrop={handleFileDrop}/>
       </div>
-      <div className='flex bg-black justify-center mt-10 text-white font-bold transition-all hover:scale-110   rounded '>
-        <Button onClick={handleFileUpload} className='items-center flex py-2 px-4'>
+      <div className='flex bg-stone-900 justify-center mt-10 text-white font-bold transition-all hover:scale-110   rounded '>
+        <Button onClick={handleFileUpload}  className='items-center flex py-2 px-4'>
           Upload <Upload className='w-4 h-4 ml-2'/>
         </Button>
       </div>
@@ -236,32 +282,16 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
 </FormGroup>
 
       </div>
-      {/* <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md text-white bg-black">
-        <DialogHeader>
-          <DialogTitle> Share link</DialogTitle>
-          <DialogDescription>
-            Anyone who has this link will be able to view this.
+      <div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogContent className="sm:max-w-md text-white bg-stone-900">
+        <DialogHeader className='flex justify-center align-middle'>
+          <DialogTitle className='flex justify-center align-middle mb-4'> Subscribe to Proceed</DialogTitle>
+          <DialogDescription className='text-center mt-4'>
+          You have reached the limit of free quiz generations. To continue creating more quizzes, please subscribe. Thank you for your understanding and support!
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2 ">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Link
-            </Label>
-            <Input
-              id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
-              readOnly
-            />
-          </div>
-          <Button type="submit" size="sm" className="px-3">
-            <span className="sr-only">Copy</span>
-            <Copy className="h-4 w-4" />
-          </Button>
         </div>
         <DialogFooter className="sm:justify-start">
         <DialogClose asChild={true}>
@@ -269,7 +299,8 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
           </DialogClose>
         </DialogFooter>
       </DialogContent>
-    </Dialog> */}
+    </Dialog>
+    </div>
     </div>
   )
 }

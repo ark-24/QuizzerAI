@@ -12,9 +12,6 @@ const DashboardPage = () => {
   const [userEmail, setUserEmail] = useState<string>("");
   const { user } = useUser();
 
-  const { quizzes, quizCount } = useQuiz();
-  console.log(quizCount)
-  console.log(currentUser)
   useEffect(()=> {
     if (user && user?.primaryEmailAddress?.emailAddress ) {
       setcurrentUser(user);

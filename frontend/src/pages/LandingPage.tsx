@@ -44,27 +44,26 @@ const LandingPage = () => {
 
     return (
 <>
-      <div className="w-screen min-h-screen bg-gradient-to-r from-gray-400 to-teal-200">
+      <div className="w-screen min-h-screen bg-gradient-to-r from-gray-600 to-teal-200">
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center text-center">
         <div className='mt-10 mb-10'>
-              <img src="/_QAI.png"></img>
+              <img className="h-1/12"src="/QAII.png"></img>
 
             </div>
           <div className="flex items-center">
            
-            <h1 className="mr-3 text-4xl font-semibold font-inter">Improve Your Studying with AI</h1>
+            <h1 className="mr-3 text-4xl font-semibold font-lato">Improve Your Studying with AI</h1>
           </div>
 
          
 
-          <p className="max-w-xl mt-2 text-lg text-slate-600">
-            Join millions of students, researchers and professionals to instantly
-            answer questions and understand research with AI
+          <p className="max-w-xl mt-4 text-lg font-mono text-slate-600">
+            Join our growing community of students, researchers and professionals to sharpen your understanding with AI!
           </p>
           <div className='flex justify-center mt-10'>
-            <h1 className='text-2xl font-inter'> How Does it Work? </h1>
+            <h1 className='text-3xl font-lato'> How Does it Work? </h1>
           </div>
 
             <div className='flex flex-row items-center relative space-x-4 mt-10 '>
@@ -84,7 +83,7 @@ const LandingPage = () => {
                 timeout={500}
                 classNames="fade"
               > */}
-                <div className='font-inter text-gray-700 '>{stepData}</div> {/* Ensured the text is centered */}
+                <div className='text-gray-700 '>{stepData}</div> {/* Ensured the text is centered */}
               {/* </CSSTransition>
             </TransitionGroup> */}
       </div>

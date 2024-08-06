@@ -119,9 +119,9 @@ useEffect(() => {
   
     return (
       <QuizContext.Provider value={quizCount.current}>
-  <div className="w-64 bg-slate-600 h-full overflow-y-auto soff p-4">
+  <div className="w-64 bg-stone-900 h-full overflow-y-auto soff p-4">
     {/* Sidebar content goes here */}
-    <Button className="w-full border-dashed flex rounded-lg justify-center items-center hover:bg-slate-800 text-white font-ubuntu border-white border h-10" onClick={handleNewQuiz}>
+    <Button className="w-full border-dashed flex rounded-lg justify-center items-center hover:bg-stone-600 text-white font-ubuntu border-white border h-10" onClick={handleNewQuiz}>
       <PlusCircle className="w-4 h-4 mr-4 " />
       New Quiz
     </Button>
@@ -147,7 +147,7 @@ useEffect(() => {
   <Separator className="w-full bottom-2 h-px bg-slate-500 " />
   <DropdownMenu>
       <DropdownMenuTrigger asChild>
-<Button className=" border p-4 bg-gradient-to-r from-teal-500 to-cyan-500 flex rounded-lg hover:border-green-800 mt-2 justify-center align-middle bottom-0 items-center hover:bg-slate-800  text-white font-ubuntu border-white  h-10" >
+<Button className=" border p-4 bg-gradient-to-r from-teal-500 to-cyan-500 flex rounded-lg hover:border-blue-300 mt-2 justify-center align-middle bottom-0 items-center hover:bg-slate-800  text-white font-ubuntu border-white  h-10" >
       <WalletCards className="w-4 h-4 mr-4 " />
       Manage Subscription
     </Button>

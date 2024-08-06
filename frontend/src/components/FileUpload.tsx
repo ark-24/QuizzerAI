@@ -59,7 +59,7 @@ const {getRootProps,  getInputProps, acceptedFiles} = useDropzone({
           : 
             <>
             <Inbox className='w-10 h-10 text-green-500'/>
-          <p className='mt-2 text-sm text-slate-400'> Drop PDF Here</p>
+          <p className='mt-2 text-sm text-slate-400'> Drop a PDF of Your Notes Here</p>
           </>
           }
         </>)

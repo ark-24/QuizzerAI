@@ -19,7 +19,7 @@ const MainLayoutPage = () => {
       <div className="flex-1">
         <Outlet />
       </div>
-      <div className="absolute top-0 right-0">
+      <div className="absolute top-0 right-0 p-2">
         <UserButton afterSignOutUrl="/" />
       </div>
     </div>

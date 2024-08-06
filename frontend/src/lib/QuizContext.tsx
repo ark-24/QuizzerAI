@@ -3,13 +3,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
 
-const QuizContext = createContext();
+const QuizContext = createContext<any>([]);
 
 export const useQuiz = () => {
   return useContext(QuizContext);
 };
 
-export const QuizProvider = ({ children }) => {
+export const QuizProvider = ({ children }:any) => {
   const [quizzes, setQuizzes] = useState([]);
   const [quizCount, setQuizCount] = useState(0);
   const { user } = useUser();

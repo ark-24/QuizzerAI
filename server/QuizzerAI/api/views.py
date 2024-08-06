@@ -240,6 +240,10 @@ def create_quiz(request):
             quiz_dict = json.loads(quiz)
             new_quiz = models.Quiz(fileKey=file_key, fileName=file_name, user_id=user_id, quizType=quiz_type, content=content, title=title)
             new_quiz.save()
+            user_id = get_user_id(user_email)
+            user = models.User.objects.get(id=user_id )
+            user.is_sub = False
+            user.save()
             return JsonResponse({"quizId": new_quiz.id}, status=200)
 
     else: 
