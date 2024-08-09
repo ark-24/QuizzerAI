@@ -10,6 +10,7 @@ import type { CarouselRef } from 'react-bootstrap/Carousel';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import '../styles/QuizPage.css';
 import Summary from '@/components/Summary';
+import { CircularProgress } from '@mui/material';
 
 interface QuizProps {
     pdfUrl: string;
@@ -78,7 +79,9 @@ const QuizPage = ({}: QuizProps) => {
   }, [id]);
 
   if (!quizData) {
-    return (<div>Loading...</div>);
+    return (        <div className="relative inset-0 flex items-center justify-center align-middle bg-white">
+    <CircularProgress />
+  </div>)
   }
 
   // const handleMCScore = (isCorrect: boolean) => {

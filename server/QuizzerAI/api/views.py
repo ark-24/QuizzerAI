@@ -60,7 +60,7 @@ class QuizListView(generics.ListAPIView):
         email = self.kwargs.get('email')
         userId = get_user_id(email)
         print("userId: " + str(userId))
-        return models.Quiz.objects.filter(user=userId)
+        return models.Quiz.objects.filter(user=userId).order_by('-createdAt')
     
     
         
@@ -237,7 +237,6 @@ def create_quiz(request):
             if content is None:
                return JsonResponse({"error": "Error generating study document..."},status=500)
             quiz = request.body
-            quiz_dict = json.loads(quiz)
             new_quiz = models.Quiz(fileKey=file_key, fileName=file_name, user_id=user_id, quizType=quiz_type, content=content, title=title)
             new_quiz.save()
             user_id = get_user_id(user_email)

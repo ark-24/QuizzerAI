@@ -16,6 +16,7 @@ from langchain.chains import RetrievalQA
 from langchain.chains import RetrievalQAWithSourcesChain 
 import pinecone_datasets 
 from openai import OpenAI
+from backend.QuizResponses import MultipleChoice, Flashcard, Summary
 
 load_dotenv()
 pinecone_api_key = os.environ.get('PINECONE_DB_API_KEY')
@@ -37,7 +38,17 @@ class RAGSystem:
         self.client = OpenAI(
                 # This is the default and can be omitted
                 api_key=os.environ.get('OPENAI_API_KEY'),
-            )    
+            )   
+
+    def get_response_type(type):
+
+        match type:
+            case "MC":
+                return MultipleChoice
+            case "FC":
+                return Flashcard
+            case "SUM":
+                return Summary
 
     def generate_rag(self,content,type):
         if self.pinecone_db:
@@ -61,7 +72,8 @@ class RAGSystem:
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content":  prompt + f" Base your response on the following data: {content}"}] ,
-                temperature=0.7
+                temperature=0.7,
+                # response_format=self.get_response_type(type)
             )
 
 

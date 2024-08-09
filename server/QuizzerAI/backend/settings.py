@@ -13,23 +13,23 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from corsheaders.defaults import default_headers
 
+# load_dotenv()
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!o$on-wxv@xf+z13^4s_w7c62*3rg=p&7@@kx7r03g1^w^0hj&'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
 CORS_ALLOW_HEADERS = default_headers + (
     'Access-Control-Allow-Origin',
@@ -119,7 +119,7 @@ DATABASES = {
 }
 
 if os.environ.get('ENVIRONMENT') == "PRODUCTION":
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    DATABASES['default'] = dj_database_url.parse(os.environ.get('DB_URL'))#.config(conn_max_age=600, ssl_require=True)
 else:
     DATABASES = {
         'default': {

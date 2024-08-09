@@ -7,10 +7,11 @@ import { LogIn } from 'lucide-react'
 import Divider from '@mui/material/Divider';
 import { Separator } from "@/components/ui/separator"
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
   // const { loggedIn, email } = props
-  // //const navigate = useNavigate()
+  const navigate = useNavigate()
 
   // const onButtonClick = () => {
   //   // You'll update this function later
@@ -44,12 +45,16 @@ const LandingPage = () => {
 
     return (
 <>
-      <div className="w-screen min-h-screen bg-gradient-to-r from-gray-600 to-teal-200">
+      <div className="w-screen min-h-screen bg-gradient-to-r from-gray-600 to-teal-200 " style={{
+            backgroundImage: "url(/Qr.jpg)",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}>
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center text-center">
         <div className='mt-10 mb-10'>
-              <img className="h-1/12"src="/QAII.png"></img>
+              <img src="/QAI--.png"></img>
 
             </div>
           <div className="flex items-center">
@@ -59,7 +64,7 @@ const LandingPage = () => {
 
          
 
-          <p className="max-w-xl mt-4 text-lg font-mono text-slate-600">
+          <p className="max-w-xl mt-4 text-lg font-mono text-black">
             Join our growing community of students, researchers and professionals to sharpen your understanding with AI!
           </p>
           <div className='flex justify-center mt-10'>
@@ -83,7 +88,7 @@ const LandingPage = () => {
                 timeout={500}
                 classNames="fade"
               > */}
-                <div className='text-gray-700 '>{stepData}</div> {/* Ensured the text is centered */}
+                <div className='text-black '>{stepData}</div> {/* Ensured the text is centered */}
               {/* </CSSTransition>
             </TransitionGroup> */}
       </div>
@@ -100,8 +105,8 @@ const LandingPage = () => {
 
       </SignedOut>
       <SignedIn>
-        {/* <SignInButton afterSignInUrl='/dashboard'> */}
-        {/* <Button onClick={goToDashboard} className="bg-black text-white font-bold py-2 px-4 rounded flex items-center"> Go To Chats <LogIn className='w-4 h-4 ml-2'/> </Button> */}
+        {/* <SignInButton afterSignInUrl='/dashboard'>  */}
+        <Button onClick={()=> navigate(`/dashboard`)} className="bg-black text-white font-bold py-2 px-4 rounded flex items-center"> Go To Quizzes <LogIn className='w-4 h-4 ml-2'/> </Button>
         {/* </SignInButton> */}
 
       </SignedIn>

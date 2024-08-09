@@ -97,7 +97,7 @@ const MultipleChoiceCard = ({ content }: MultipleChoiceCardProps) => {
           <div
             key={index}
             
-            className={`border-2 font-lato border-teal-400 p-4 mb-2 rounded-lg cursor-pointer hover:bg-teal-200
+            className={`border-2 font-roboto border-teal-400 p-4 mb-2 rounded-lg cursor-pointer hover:bg-teal-200
               ${selectedOption === option ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
               ${isSubmitted && option === content[currIndex].correct_answer ? 'bg-green-100 border-green-500' : ''}
               ${isSubmitted && selectedOption === option && selectedOption !== content[currIndex].correct_answer ? 'bg-red-100 border-red-500' : ''}

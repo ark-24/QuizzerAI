@@ -200,20 +200,16 @@ const CreateQuiz = ({userEmail}: CreateQuizProps) => {
   }));
 
   return (
-     <div className='h-full' style={{
-      backgroundImage: "url(/back.jpg)",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }} 
-    //style={{
-    //   backgroundImage: "url(/background.jpg)",
+     <div className='h-full bg-gradient-to-r from-green-200 to-teal-200'
+    //  style={{
+    //   backgroundImage: "url(/back.jpg)",
     //   backgroundSize: 'cover',
     //   backgroundPosition: 'center',
-    // }}>
-    >
+    // }}
+        >
         <div className='flex justify-center items-center h-screen'>
     <FormGroup>
-    <h2 className='text-5xl font-roboto mb-24'> Create A Quiz </h2>
+    <h2 className='text-5xl font-ubuntu mb-24'> Create A Quiz </h2>
 
    
             <div className="relative flex items-center max-w-2xl ">

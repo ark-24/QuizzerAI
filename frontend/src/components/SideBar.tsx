@@ -126,7 +126,7 @@ useEffect(() => {
       New Quiz
     </Button>
 
-    <div className="flex flex-col gap-2 mt-4">
+    <div className="flex flex-col gap-2 mt-4 pb-14">
         {quizzes && quizzes.map((quiz: any, index:number) => (
           <Link key={index} to={`/quiz/${quiz.id}?type=${quiz.quizType}`}>
           <div key={index} className={cn("rounded-lg p-3 group  text-slate-300 flex items-center font-lato hover:bg-slate-100 ", {
@@ -143,7 +143,7 @@ useEffect(() => {
           </div>
           </Link>
     ))}
-<div className=' bottom-0 h-16 object-bottom fixed'>
+<div className=' fixed bottom-0 h-16 object-bottom '>
   <Separator className="w-full bottom-2 h-px bg-slate-500 " />
   <DropdownMenu>
       <DropdownMenuTrigger asChild>
